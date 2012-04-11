@@ -1,0 +1,198 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+ */
+options
+{
+  JDK_VERSION = "1.5";
+  static = false;
+}
+
+PARSER_BEGIN(eg1)
+	
+public class eg1
+{
+  public static void main(String args []) throws ParseException
+  {
+    //System.out.println("TESTE");
+	eg1 Analyzer  = new eg1(System.in);
+	Analyzer.Start();
+  }
+}
+    
+PARSER_END(eg1)
+
+SKIP : {" " | "\n" | "\r" | "\t" }
+
+SPECIAL_TOKEN:
+{
+  
+ < COMMENT: "//" (< ALL >)* ("\r") >
+| < COMMENT1: "/*" (< ALL >)* "*/" >
+}
+
+TOKEN :
+{
+ < LPAREN: "(" >
+| < RPAREN: ")" >
+| < LSQPAREN: "[" >
+| < RSQPAREN: "]" >
+| < LBRACE: "{" >
+| < RBRACE: "}" >
+| < SEMICOLON: ";" >
+| < DOT: "." >
+| < COMMA: ",">
+| < ASSIGN: "=" >
+| < OP: ("+"|"-"|"*"|"&&"|"<") >   
+| < NOT : "!" >   
+| < BOOLEAN: "boolean" >   
+| < CLASS: "class" >
+| < ELSE: "else" >
+| < FALSE: "false" >
+| < IF: "if" >
+| < WHILE: "while" >
+| < INTEGER: "int" >   
+| < LENGTH: "length" >
+| < MAIN: "main" >
+| < NEW: "new" >
+| < PUBLIC: "public" >
+| < RETURN: "return" >
+| < STATIC: "static" >
+| < STRING: "String" >
+| < THIS: "this" >
+| < TRUE: "true" >
+| < PRINT: "System.out.println" >
+| < VOID: "void" >
+| < EXTENDS: "extends" >
+| < #ALL:[" "-"~"] >
+| < #DIGIT: ["0"-"9"] > 
+| < NUM: (< DIGIT >)+ >
+| < ID: (["a"-"z"] | ["A"-"Z"]) (["a"-"z"] | ["A"-"Z"] | "_" | < DIGIT >)* >
+}
+
+void Start() :
+{}
+{
+(Program())
+<EOF>
+  { System.out.println("Successfully recognized all tokens"); }
+
+}
+
+void Program ():
+{}
+{
+	(MainClass())
+	   (ClassDecl())*
+}
+
+void MainClass():
+{}
+{
+  <CLASS> <ID> <LBRACE> < PUBLIC> <STATIC > <VOID > <MAIN > <LPAREN > <STRING > <LSQPAREN >
+  <RSQPAREN > <ID > <RPAREN > < LBRACE> (Statement()) < RBRACE> <RBRACE >
+}
+
+void ClassDecl():
+{}
+{
+	
+	  < CLASS > <ID > ((<LBRACE > (VarDecl())* (MethodDecl())* < RBRACE >) |
+	(<EXTENDS > <ID > <LBRACE > (VarDecl())* (MethodDecl())* < RBRACE >))
+
+
+}
+void VarDecl():
+{}
+{
+  (Type()) < ID> < SEMICOLON>
+}
+
+  
+void MethodDecl():
+{}
+{
+    
+	(
+	  < PUBLIC > (Type()) < ID > <LPAREN> (FormalList())<RPAREN > < LBRACE > (LOOKAHEAD(2)VarDecl())* ((Statement()))* 
+	< RETURN > (Exp()) < SEMICOLON > <RBRACE >) 
+	
+}
+  
+void FormalList():
+{}
+{
+  ((Type()) <ID > (FormalRest())*) |
+  {}
+
+    
+}
+void FormalRest():
+{}
+{
+  <COMMA > (Type())< ID>
+}
+void Type():
+{}
+{
+  (< INTEGER> (< LSQPAREN> <RSQPAREN >)?)|
+  < BOOLEAN>|
+  < ID>
+}
+
+void Statement():
+{}
+{
+  (< LBRACE> (Statement()))| 
+  (
+    < IF> < LPAREN> (Exp()) < RPAREN> (Statement()) <ELSE > (Statement()))|
+  (<WHILE > < LPAREN> (Exp()) <RPAREN > (Statement()))|
+  (< PRINT> < LPAREN> (Exp()) < RPAREN> < SEMICOLON>)|
+  
+    < ID> ((< ASSIGN> (Exp()) < SEMICOLON>)|
+  (< LSQPAREN> (Exp()) < RSQPAREN> < ASSIGN> (Exp()) < SEMICOLON>))
+}
+
+void Exp():
+{}
+{
+  
+  (< NUM> (ExpLinha()))|
+  (< TRUE> (ExpLinha()))|
+  (< FALSE> (ExpLinha()))|
+  (< ID> (ExpLinha()))|
+  ( < NEW> ((< INTEGER> < LSQPAREN> (Exp()) < RSQPAREN> )|
+  (< ID> < LPAREN> < RPAREN> ExpLinha()))) |
+  (< THIS> (ExpLinha()))|
+  (< NOT> (Exp()) )|
+  (< LPAREN> (Exp()) < RPAREN>)
+}
+void ExpLinha():
+{}
+{
+  (< OP> (Exp()) (ExpLinha()))|
+  (< LSQPAREN> (Exp()) < RSQPAREN> (ExpLinha()))|
+    (	
+      < DOT> ((< LENGTH> (ExpLinha()))|
+  (< ID> < LPAREN> (ExpList()) < RPAREN> (ExpLinha()))))
+| 
+{}
+
+
+}
+
+void ExpList():
+{}
+{
+  ((Exp())(ExpRest())*)
+|
+{}
+
+  
+}
+
+
+void ExpRest():
+{}
+{
+  < COMMA> (Exp())
+}
