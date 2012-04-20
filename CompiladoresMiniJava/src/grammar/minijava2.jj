@@ -13,14 +13,15 @@ PARSER_BEGIN(eg1)
 
 package grammar;
 import syntaxtree.*;
-
+import visitor.*;
 public class eg1
 {
   public static void main(String args []) throws ParseException
   {
     //System.out.println("TESTE");
 	eg1 Analyzer  = new eg1(System.in);
-	Analyzer.Start();
+	Program x = Analyzer.Start();
+	x.accept(new ASTPrintVisitor())	;
   }
 }
     
@@ -74,12 +75,13 @@ TOKEN :
 | < ID: (["a"-"z"] | ["A"-"Z"]) (["a"-"z"] | ["A"-"Z"] | "_" | < DIGIT >)* >
 }
 
-void Start() :
-{}
+Program Start() :
+{Program retorno;}
 {
-(Program())
-<EOF>
-  { System.out.println("Successfully recognized all tokens"); }
+(retorno = Program())
+"$"
+  { System.out.println("Successfully recognized all tokens");
+    return retorno; }
 
 }
 
@@ -103,23 +105,23 @@ MainClass MainClass():
 }
 {
   <CLASS> classId = <ID> <LBRACE> < PUBLIC> <STATIC > <VOID > <MAIN > <LPAREN > <STRING > <LSQPAREN >
-  <RSQPAREN > stringId = <ID > <RPAREN > < LBRACE> statement = new Statement() < RBRACE> <RBRACE >
-  { return new MainClass(classId,stringId,statement);}    
+  <RSQPAREN > stringId = <ID > <RPAREN > < LBRACE> statement = Statement() < RBRACE> <RBRACE >
+  { return new MainClass(new Identifier(classId.toString()),new Identifier(stringId.toString()),statement);}    
 }
 
 ClassDecl ClassDecl():
 {
   Token classId;
   Token superClassId;
-  MethodDeclList methodDeclList = new MehotdDeclList();
+  MethodDeclList methodDeclList = new MethodDeclList();
   VarDeclList varDeclList = new VarDeclList();
   VarDecl varDecl;
   MethodDecl methodDecl;
 }
 {
 	
-	  < CLASS > classId = <ID > ( (<LBRACE > (varDecl = VarDecl() { varDeclList.addElement(varDecl);})* (methodDecl = MethodDecl()	  {methodDeclList.addElement(methodDecl);})* < RBRACE >)	  { return new ClassDeclSimple(classID, varDeclList, methodDeclList);} |
-	(<EXTENDS > superClassId = <ID > <LBRACE > (varDecl = VarDecl()	{ varDeclList.addElement(varDecl);})* (methodDecl = MethodDecl()	{ methodDeclList.addElement(methodDecl);})* < RBRACE >)	{ return new ClassDeclExtends(classID, superClassID, varDeclList, methodDeclList);})
+	  < CLASS > classId = <ID > ( (<LBRACE > (varDecl = VarDecl() { varDeclList.addElement(varDecl);})* (methodDecl = MethodDecl()	  {methodDeclList.addElement(methodDecl);})* < RBRACE >)	  { return new ClassDeclSimple(new Identifier(classId.toString()), varDeclList, methodDeclList);} |
+	(<EXTENDS > superClassId = <ID > <LBRACE > (varDecl = VarDecl()	{ varDeclList.addElement(varDecl);})* (methodDecl = MethodDecl()	{ methodDeclList.addElement(methodDecl);})* < RBRACE >)	{ return new ClassDeclExtends(new Identifier(classId.toString()), new Identifier(superClassId.toString()), varDeclList, methodDeclList);})
 
 
 }
@@ -129,7 +131,7 @@ VarDecl VarDecl():
   Type type1;
 }
 {
-  type1 = Type() varID = < ID> < SEMICOLON>  { return new VarDecl(type1,varID); }
+  type1 = Type() varID = < ID> < SEMICOLON>  { return new VarDecl(type1,new Identifier(varID.toString())); }
 }
 
   
@@ -147,83 +149,109 @@ MethodDecl MethodDecl():
 { 
 	(
 	  < PUBLIC > t = Type() methodID = < ID > <LPAREN> fl = FormalList() <RPAREN > < LBRACE > (LOOKAHEAD(2)varDecl = VarDecl()	  {vl.addElement(varDecl);})* (statement = Statement()	  { sl.addElement(statement);})* 
-	< RETURN > e = Exp() < SEMICOLON > <RBRACE >)	{return new MethodDecl(t,new Identifier(methodID.image),fl,vl,sl,e);} 
+	< RETURN > e = Exp() < SEMICOLON > <RBRACE >)	{return new MethodDecl(t,new Identifier(methodID.toString()),fl,vl,sl,e);} 
 }
   
-void FormalList():
-{}
+FormalList FormalList():
 {
-  ((Type()) <ID > (FormalRest())*) |
-  {}
+  Type t;
+  Token formalListId;
+  Formal formal1;
+  FormalList fl = new FormalList();
+  
+}
+{
+  (t = Type() formalListId = <ID >  { formal1 = new Formal(t,new Identifier(formalListId.image)); fl.addElement(formal1);} (FormalRest(fl))*) { return fl;}|
+  { return fl;}
 
     
 }
-void FormalRest():
-{}
+void FormalRest(FormalList fl):
 {
-  <COMMA > (Type())< ID>
+  Type t;
+  Token id;
 }
-void Type():
-{}
 {
-  (< INTEGER> (< LSQPAREN> <RSQPAREN >)?)|
-  < BOOLEAN>|
-  < ID>
+  <COMMA > t = Type() id = < ID>  { fl.addElement(new Formal(t,new Identifier(id.image)));}
 }
-
-void Statement():
-{}
+Type Type():
 {
-      (< LBRACE> (Statement())* < RBRACE >) | 
-  (< IF> < LPAREN> (Exp()) < RPAREN> Statement() <ELSE > Statement())|
-  (<WHILE > < LPAREN> Exp() <RPAREN > Statement())|
-  (< PRINT> < LPAREN> Exp() < RPAREN> < SEMICOLON>)|
-  
-    < ID> ( (< ASSIGN> Exp() < SEMICOLON>)|
-  (< LSQPAREN> Exp() < RSQPAREN> < ASSIGN> Exp() < SEMICOLON>))
+	Token t;
+}
+{
+  (< INTEGER> ((< LSQPAREN> <RSQPAREN >{ return new IntArrayType();}) |  {return new IntegerType();})) |
+  < BOOLEAN>  { return new BooleanType();}|
+  t = < ID>  { return new IdentifierType(t.image); }
 }
 
-void Exp():
-{}
+Statement Statement():
+{
+  Token t;
+  Statement stm1,stm2;
+  StatementList sl = new StatementList();
+  Exp e1,e2;
+}
+{  (< LBRACE> (stm1 = Statement(){sl.addElement(stm1);})* < RBRACE >)  {return new Block(sl);} | 
+  (< IF> < LPAREN> e1 = Exp() < RPAREN> stm1 = Statement() <ELSE > stm2 = Statement())  { return new If(e1,stm1,stm2);}|
+  (<WHILE > < LPAREN> e1 = Exp() <RPAREN > stm1 = Statement())  { return new While(e1,stm1);}|
+  (< PRINT> < LPAREN> e1 = Exp() < RPAREN> < SEMICOLON>)  { return new Print(e1);}|
+    t = < ID> ( (< ASSIGN> e1 = Exp() < SEMICOLON>)    { return new Assign(new Identifier(t.image),e1);}|
+  (< LSQPAREN> e1 = Exp() < RSQPAREN> < ASSIGN> e2 = Exp() < SEMICOLON>)  { return new ArrayAssign(new Identifier(t.image),e1,e2);})
+}
+
+Exp Exp():
+{
+  Exp exp1;
+  Token id1;
+  Exp exp2;}
 {
   
-  (< NUM> (ExpLinha()))|
-  (< TRUE> (ExpLinha()))|
-  (< FALSE> (ExpLinha()))|
-  (< ID> (ExpLinha()))|
-  ( < NEW> ((< INTEGER> < LSQPAREN> (Exp()) < RSQPAREN> ExpLinha() )|
-  (< ID> < LPAREN> < RPAREN> ExpLinha()))) |
-  (< THIS> (ExpLinha()))|
-  (< NOT> (Exp()) (ExpLinha()) )|
-  (< LPAREN> (Exp()) < RPAREN> (ExpLinha()))
+  ( id1 = < NUM>  { exp1 = new IntegerLiteral(Integer.parseInt(id1.toString())); return ExpLinha(exp1);})|
+  (< TRUE>  { exp1 = new True(); return ExpLinha(exp1);})|
+  (< FALSE>  { exp1 = new False(); return ExpLinha(exp1);})|
+  ( id1 = < ID>  { exp1 = new IdentifierExp(id1.toString()); return ExpLinha(exp1);})|
+  ( < NEW> ((< INTEGER> < LSQPAREN>  exp2 =Exp() < RSQPAREN> { exp1 = new NewArray(exp2); return ExpLinha(exp1);} )|
+  ( id1 = < ID> < LPAREN> < RPAREN> { exp1 = new NewObject(new Identifier(id1.toString())); return ExpLinha(exp1);}))) |
+  (< THIS>  { exp1 = new This(); return ExpLinha(exp1);} )|
+  (< NOT> exp2 = Exp() { exp1 = new Not(exp2); return ExpLinha(exp1);}  )|
+  (< LPAREN> exp1 = Exp() < RPAREN> {return ExpLinha(exp1);} )
 }
-void ExpLinha():
-{}
+Exp ExpLinha(Exp exp1):
 {
-  (< OP> Exp())|
-  (< LSQPAREN> Exp() < RSQPAREN>)|
+  Exp exp2;
+  Token ope;
+  ExpList expList;}
+{
+  (ope = < OP> exp2 = Exp(){ if(ope.toString().equals("&&")) return new And(exp1,exp2);
+  							if(ope.toString().equals("+")) return new Plus(exp1,exp2);
+  							if(ope.toString().equals("-"))return new Minus(exp1,exp2);
+  							if(ope.toString().equals("*"))return new Times(exp1,exp2);
+  							if(ope.toString().equals("<"))return new LessThan(exp1,exp2); })|
+  (< LSQPAREN> exp2 = Exp() < RSQPAREN> { return new ArrayLookup(exp1,exp2);})|
     (	
-      < DOT> ((< LENGTH> )|
-  (< ID> < LPAREN> ExpList() < RPAREN> )))
+      < DOT> ((< LENGTH>{ return new ArrayLength(exp1);})|
+  (ope = < ID> < LPAREN> expList = ExpList() < RPAREN> { return new Call(exp1,new Identifier(ope.toString()),expList);} )))
 | 
-{}
+{return exp1;}
 
 
 }
 
-void ExpList():
-{}
+ExpList ExpList():
 {
-  ((Exp())(ExpRest())*)
+  ExpList expList = new ExpList();
+  Exp exp1;}
+{
+  ( exp1 = Exp(){ expList.addElement(exp1);} (ExpRest(expList) )* {return expList;})
 |
-{}
+{return expList;}
 
   
 }
 
 
-void ExpRest():
-{}
+void ExpRest(ExpList expList):
+{Exp exp1;}
 {
-  < COMMA> (Exp())
+  < COMMA> exp1 = Exp() { expList.addElement(exp1);}
 }
