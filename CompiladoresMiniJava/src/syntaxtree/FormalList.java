@@ -3,10 +3,10 @@ package syntaxtree;
 import java.util.Vector;
 
 public class FormalList {
-   private Vector list;
+   private Vector<Formal> list;
 
    public FormalList() {
-      list = new Vector();
+      list = new Vector<Formal>();
    }
 
    public void addElement(Formal n) {
