@@ -3,10 +3,10 @@ package syntaxtree;
 import java.util.Vector;
 
 public class MethodDeclList {
-   private Vector list;
+   private Vector<MethodDecl> list;
 
    public MethodDeclList() {
-      list = new Vector();
+      list = new Vector<MethodDecl>();
    }
 
    public void addElement(MethodDecl n) {

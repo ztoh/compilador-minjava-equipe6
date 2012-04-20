@@ -3,10 +3,10 @@ package syntaxtree;
 import java.util.Vector;
 
 public class ExpList {
-   private Vector list;
+   private Vector<Exp> list;
 
    public ExpList() {
-      list = new Vector();
+      list = new Vector<Exp>();
    }
 
    public void addElement(Exp n) {
