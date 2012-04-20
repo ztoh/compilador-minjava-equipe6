@@ -147,7 +147,7 @@ void Statement():
   (<WHILE > < LPAREN> Exp() <RPAREN > Statement())|
   (< PRINT> < LPAREN> Exp() < RPAREN> < SEMICOLON>)|
   
-    < ID> ((< ASSIGN> Exp() < SEMICOLON>)|
+    < ID> ( (< ASSIGN> Exp() < SEMICOLON>)|
   (< LSQPAREN> Exp() < RSQPAREN> < ASSIGN> Exp() < SEMICOLON>))
 }
 
@@ -159,20 +159,20 @@ void Exp():
   (< TRUE> (ExpLinha()))|
   (< FALSE> (ExpLinha()))|
   (< ID> (ExpLinha()))|
-  ( < NEW> ((< INTEGER> < LSQPAREN> (Exp()) < RSQPAREN> )|
+  ( < NEW> ((< INTEGER> < LSQPAREN> (Exp()) < RSQPAREN> ExpLinha() )|
   (< ID> < LPAREN> < RPAREN> ExpLinha()))) |
   (< THIS> (ExpLinha()))|
-  (< NOT> (Exp()) )|
-  (< LPAREN> (Exp()) < RPAREN>)
+  (< NOT> (Exp()) (ExpLinha()) )|
+  (< LPAREN> (Exp()) < RPAREN> (ExpLinha()))
 }
 void ExpLinha():
 {}
 {
-  (< OP> (Exp()) (ExpLinha()))|
-  (< LSQPAREN> (Exp()) < RSQPAREN> (ExpLinha()))|
+  (< OP> Exp())|
+  (< LSQPAREN> Exp() < RSQPAREN>)|
     (	
-      < DOT> ((< LENGTH> (ExpLinha()))|
-  (< ID> < LPAREN> (ExpList()) < RPAREN> (ExpLinha()))))
+      < DOT> ((< LENGTH> )|
+  (< ID> < LPAREN> ExpList() < RPAREN> )))
 | 
 {}
 
