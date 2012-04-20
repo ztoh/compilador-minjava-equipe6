@@ -1,6 +1,8 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
  */
+
+
 options
 {
   JDK_VERSION = "1.5";
@@ -8,7 +10,10 @@ options
 }
 
 PARSER_BEGIN(eg1)
-	
+
+package grammar;
+import syntaxtree.*;
+
 public class eg1
 {
   public static void main(String args []) throws ParseException
@@ -78,44 +83,71 @@ void Start() :
 
 }
 
-void Program ():
-{}
+Program Program ():
 {
-	(MainClass())
-	   (ClassDecl())*
+  MainClass mainClass;
+  ClassDecl classDecl;
+  ClassDeclList cdList = new ClassDeclList();
+}
+{
+	mainClass = MainClass()
+	   (classDecl = ClassDecl() {cdList.addElement(classDecl);})*
+	   { return new Program(mainClass,cdList);}	 	     
 }
 
-void MainClass():
-{}
+MainClass MainClass():
 {
-  <CLASS> <ID> <LBRACE> < PUBLIC> <STATIC > <VOID > <MAIN > <LPAREN > <STRING > <LSQPAREN >
-  <RSQPAREN > <ID > <RPAREN > < LBRACE> (Statement()) < RBRACE> <RBRACE >
+  Statement statement;
+  Token classId;
+  Token stringId; 
+}
+{
+  <CLASS> classId = <ID> <LBRACE> < PUBLIC> <STATIC > <VOID > <MAIN > <LPAREN > <STRING > <LSQPAREN >
+  <RSQPAREN > stringId = <ID > <RPAREN > < LBRACE> statement = new Statement() < RBRACE> <RBRACE >
+  { return new MainClass(classId,stringId,statement);}    
 }
 
-void ClassDecl():
-{}
+ClassDecl ClassDecl():
+{
+  Token classId;
+  Token superClassId;
+  MethodDeclList methodDeclList = new MehotdDeclList();
+  VarDeclList varDeclList = new VarDeclList();
+  VarDecl varDecl;
+  MethodDecl methodDecl;
+}
 {
 	
-	  < CLASS > <ID > ((<LBRACE > (VarDecl())* (MethodDecl())* < RBRACE >) |
-	(<EXTENDS > <ID > <LBRACE > (VarDecl())* (MethodDecl())* < RBRACE >))
+	  < CLASS > classId = <ID > ( (<LBRACE > (varDecl = VarDecl() { varDeclList.addElement(varDecl);})* (methodDecl = MethodDecl()	  {methodDeclList.addElement(methodDecl);})* < RBRACE >)	  { return new ClassDeclSimple(classID, varDeclList, methodDeclList);} |
+	(<EXTENDS > superClassId = <ID > <LBRACE > (varDecl = VarDecl()	{ varDeclList.addElement(varDecl);})* (methodDecl = MethodDecl()	{ methodDeclList.addElement(methodDecl);})* < RBRACE >)	{ return new ClassDeclExtends(classID, superClassID, varDeclList, methodDeclList);})
 
 
 }
-void VarDecl():
-{}
+VarDecl VarDecl():
 {
-  (Type()) < ID> < SEMICOLON>
+  Token varID;
+  Type type1;
+}
+{
+  type1 = Type() varID = < ID> < SEMICOLON>  { return new VarDecl(type1,varID); }
 }
 
   
-void MethodDecl():
-{}
+MethodDecl MethodDecl():
 {
-    
+  Type t;
+  Token methodID;
+  FormalList fl;
+  VarDeclList vl = new VarDeclList();
+  StatementList sl = new StatementList();
+  Exp e;
+  VarDecl varDecl;
+  Statement statement;
+}
+{ 
 	(
-	  < PUBLIC > (Type()) < ID > <LPAREN> (FormalList())<RPAREN > < LBRACE > (LOOKAHEAD(2)VarDecl())* ((Statement()))* 
-	< RETURN > (Exp()) < SEMICOLON > <RBRACE >) 
-	
+	  < PUBLIC > t = Type() methodID = < ID > <LPAREN> fl = FormalList() <RPAREN > < LBRACE > (LOOKAHEAD(2)varDecl = VarDecl()	  {vl.addElement(varDecl);})* (statement = Statement()	  { sl.addElement(statement);})* 
+	< RETURN > e = Exp() < SEMICOLON > <RBRACE >)	{return new MethodDecl(t,new Identifier(methodID.image),fl,vl,sl,e);} 
 }
   
 void FormalList():
