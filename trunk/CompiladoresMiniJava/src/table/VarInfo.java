@@ -22,4 +22,5 @@ public class VarInfo {
 	{
 		return symbol;
 	}
+	
 }
