@@ -1,4 +1,7 @@
 package syntaxtree;
+import symbol.Symbol;
+import symboltablevisitor.ImperativeSymbolTableVisitor;
+import table.ClassInfo;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -17,5 +20,11 @@ public class MainClass {
   public Type accept(TypeVisitor v) {
     return v.visit(this);
   }
+
+public ClassInfo accept(ImperativeSymbolTableVisitor imperativeSymbolTableVisitor,
+		Symbol id) {
+	// TODO Auto-generated method stub
+	return new ClassInfo(id);
+}
 }
 
