@@ -1,4 +1,7 @@
 package syntaxtree;
+import symbol.Symbol;
+import symboltablevisitor.ImperativeSymbolTableVisitor;
+import table.VarInfo;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -16,5 +19,10 @@ public class VarDecl {
 
   public Type accept(TypeVisitor v) {
     return v.visit(this);
+  }
+  
+  public VarInfo accept(ImperativeSymbolTableVisitor n)
+  {
+	  return new VarInfo(t, Symbol.symbol(i.toString()));
   }
 }

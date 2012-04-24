@@ -1,4 +1,8 @@
 package syntaxtree;
+import symbol.Symbol;
+import symboltablevisitor.ImperativeSymbolTableVisitor;
+import table.ClassInfo;
+import table.Table;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -17,5 +21,10 @@ public class ClassDeclSimple extends ClassDecl {
 
   public Type accept(TypeVisitor v) {
     return v.visit(this);
+  }
+  
+  public ClassInfo accept(ImperativeSymbolTableVisitor v)
+  {
+	  return new ClassInfo(Symbol.symbol(i.toString()));
   }
 }

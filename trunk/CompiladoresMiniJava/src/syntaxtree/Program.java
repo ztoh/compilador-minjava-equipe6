@@ -1,4 +1,6 @@
 package syntaxtree;
+import symboltablevisitor.ImperativeSymbolTableVisitor;
+import table.Table;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -16,5 +18,10 @@ public class Program {
 
   public Type accept(TypeVisitor v) {
     return v.visit(this);
+  }
+  
+  public Table accept(ImperativeSymbolTableVisitor v)
+  {
+	  return v.visit(this);
   }
 }
