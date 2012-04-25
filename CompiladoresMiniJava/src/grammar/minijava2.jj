@@ -18,7 +18,6 @@ public class eg1
 {
   public static void main(String args []) throws ParseException
   {
-    //System.out.println("TESTE");
 	eg1 Analyzer  = new eg1(System.in);
 	Program x = Analyzer.Start();
 	x.accept(new ASTPrintVisitor())	;
