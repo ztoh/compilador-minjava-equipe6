@@ -6,7 +6,7 @@ import visitor.TypeVisitor;
 
 public class MethodDecl {
   public Type t;
-  public Identifier i;
+  public Identifier id;
   public FormalList fl;
   public VarDeclList vl;
   public StatementList sl;
@@ -14,7 +14,7 @@ public class MethodDecl {
 
   public MethodDecl(Type at, Identifier ai, FormalList afl, VarDeclList avl, 
                     StatementList asl, Exp ae) {
-    t=at; i=ai; fl=afl; vl=avl; sl=asl; e=ae;
+    t=at; id=ai; fl=afl; vl=avl; sl=asl; e=ae;
   }
  
   public void accept(Visitor v) {
