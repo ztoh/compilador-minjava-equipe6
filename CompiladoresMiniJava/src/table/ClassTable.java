@@ -2,12 +2,17 @@ package table;
 
 import java.util.Hashtable;
 import java.util.Set;
-
+import java.util.Iterator;
 import symbol.Symbol;
 
 public class ClassTable extends Table{
 
 	public Hashtable<Symbol, ClassInfo> dict;
+	
+	public ClassTable()
+	{
+		dict = new Hashtable<Symbol, ClassInfo>();
+	}
 	
 	@Override
 	public void put(Symbol key, Object value) {
@@ -34,6 +39,22 @@ public class ClassTable extends Table{
 	public Set<Symbol> keys() {
 		// TODO Auto-generated method stub
 		return dict.keySet();
+	}
+	
+	@Override
+	public String toString()
+	{
+		String retorno = "Classes\n";
+		Iterator<ClassInfo> aux = dict.values().iterator();
+		//ClassInfo aux2;
+		int i = 0;
+		while(aux.hasNext()) {
+			i++;
+			//aux2 = aux.next();
+			retorno +=aux.next().toString() + "\n";
+		}
+		System.out.println("Numero de Classes " + i);
+		return retorno;
 	}
 
 }

@@ -12,6 +12,7 @@ public class MethodInfo extends Table{
 	public VarTable paramEntrada;
 	public VarTable listaDeVariaveis;
 	public Symbol id;
+	private boolean isParametro;
 	
 	public MethodInfo(Symbol retorno, Symbol id)
 	{
@@ -19,12 +20,13 @@ public class MethodInfo extends Table{
 		paramEntrada = new VarTable();
 		listaDeVariaveis = new VarTable();
 		this.id = id;
+		this.isParametro = true;
 		
 	}
 	
 	@Override
 	public void put(Symbol key, Object value) {
-		if(isParam())
+		if(isParametro)
 		{
 			if(paramEntrada.get(key) != null)
 			{
@@ -51,9 +53,9 @@ public class MethodInfo extends Table{
 		// TODO Auto-generated method stub
 		
 	}
-	private boolean isParam() {
+	public void setisParametro(boolean isParametro) {
+		this.isParametro = isParametro;
 		// TODO Auto-generated method stub
-		return false;
 	}
 	@Override
 	public Object get(Symbol key) {
@@ -71,6 +73,19 @@ public class MethodInfo extends Table{
 		Set<Symbol> retorno = paramEntrada.keys();
 		retorno.addAll(listaDeVariaveis.keys());
 		// TODO Auto-generated method stub
+		return retorno;
+	}
+	
+	public String toString ()
+	{
+		String retorno = "\n";
+		retorno += "Metodo " + this.id;
+		retorno += " Parametros de Entrada ";
+		retorno += this.paramEntrada.toString();
+		retorno += " Variaveis declaradas ";
+		retorno += this.listaDeVariaveis.toString();
+		retorno += " Retorno ";
+		retorno += this.retorno;
 		return retorno;
 	}
 	

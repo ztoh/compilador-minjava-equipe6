@@ -28,5 +28,24 @@ public class VarTable extends Table {
 		return var.keySet();
 		// TODO Auto-generated method stub
 	}
+	
+	public String toString()
+	{
+		String retorno = "\t";
+		Iterator<VarInfo> aux = this.var.values().iterator();
+		VarInfo aux2;
+		//System.out.println("Tamanho do hash " + var.size());
+		while (aux.hasNext()) {
+			aux2 = aux.next();
+			retorno += " " + aux2.toString();
+			//System.out.println("teste3");
+			//System.out.println(aux2.toString());
+			
+		}
+		//System.out.println("teste");
+		//System.out.println(retorno);
+		return retorno;
+		
+	}
 
 }
