@@ -1,4 +1,6 @@
 package syntaxtree;
+import symbol.Symbol;
+import symboltablevisitor.ImperativeSymbolTableVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -19,5 +21,9 @@ public class Identifier {
 
   public String toString(){
     return s;
+  }
+  
+  public Symbol accept(ImperativeSymbolTableVisitor v){
+	  return Symbol.symbol(s.toString());
   }
 }
