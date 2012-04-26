@@ -59,61 +59,90 @@ public class ImperativeSymbolTableVisitor implements SymbolTableVisitor {
 		}
 		
 		// TODO Auto-generated method stub
-		return new ClassInfo(Symbol.symbol(n.i.toString()));
+		ClassInfo retorno = new ClassInfo(Symbol.symbol(n.i.toString()));
+		retorno.setatributos(k);
+		retorno.setmetodos(k1);
+		return retorno;//new ClassInfo(Symbol.symbol(n.i.toString()));
 	}
 
 	@Override
 	public Table visit(ClassDeclExtends n) {
+		VarInfo s;
+		VarTable k = new VarTable();
+		MethodInfo s1;
+		MethodTable k1 = new MethodTable();
+		for (int i = 0; i < n.vl.size(); i++) {
+			 s = n.vl.elementAt(i).accept(this);
+			 k.put(Symbol.symbol(s.toString()), s);
+		}
+		
+		for (int i = 0; i < n.ml.size() ; i++) {
+			s1 = (MethodInfo)n.ml.elementAt(i).accept(this);
+			k1.put(Symbol.symbol(s1.toString()), s1);
+		}
+		
 		// TODO Auto-generated method stub
-		return null;
+		ClassInfo retorno = new ClassInfo(Symbol.symbol(n.i.toString()));
+		retorno.setatributos(k);
+		retorno.setmetodos(k1);
+		return retorno;
 	}
 
 	@Override
 	public Table visit(MethodDecl n) {
+		MethodInfo s = new MethodInfo(Symbol.symbol(n.t.toString()), Symbol.symbol(n.id.toString()));
+		for (int i = 0; i < n.fl.size(); i++) {
+			s.put(Symbol.symbol(n.fl.elementAt(i).toString()),n.fl.elementAt(i).accept(this));	
+			
+		}
+		s.setisParametro(false);
+		for (int i = 0; i < n.vl.size(); i++) {
+			s.put(Symbol.symbol(n.vl.elementAt(i).toString()), n.vl.elementAt(i).accept(this));
+		}
 		// TODO Auto-generated method stub
-		return null;
+		return s;
 	}
 
 	@Override
 	public VarInfo visit(VarDecl n) {
 		// TODO Auto-generated method stub
-		return null;
+		return n.accept(this);
 	}
 
 	@Override
 	public VarInfo visit(Formal n) {
 		// TODO Auto-generated method stub
-		return null;
+		return n.accept(this);
 	}
 
 	@Override
 	public Symbol visit(Identifier n) {
 		// TODO Auto-generated method stub
-		return null;
+		return n.accept(this);
 	}
 
 	@Override
 	public Symbol visit(IntegerType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return n.accept(this);
 	}
 
 	@Override
 	public Symbol visit(BooleanType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return n.accept(this);
 	}
 
 	@Override
 	public Symbol visit(IntArrayType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return n.accept(this);
 	}
 
 	@Override
 	public Symbol visit(IdentifierType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return n.accept(this);
 	}
 
 }
