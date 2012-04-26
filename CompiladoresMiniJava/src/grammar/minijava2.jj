@@ -14,13 +14,17 @@ PARSER_BEGIN(eg1)
 package grammar;
 import syntaxtree.*;
 import visitor.*;
+import symboltablevisitor.*;
+import table.*;
+
 public class eg1
 {
   public static void main(String args []) throws ParseException
   {
 	eg1 Analyzer  = new eg1(System.in);
 	Program x = Analyzer.Start();
-	x.accept(new ASTPrintVisitor())	;
+	Table k = x.accept(new ImperativeSymbolTableVisitor());
+	System.out.println(k.toString());
   }
 }
     
