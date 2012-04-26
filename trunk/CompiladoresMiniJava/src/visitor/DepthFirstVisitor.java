@@ -64,7 +64,7 @@ public class DepthFirstVisitor implements Visitor {
   // Exp e;
   public void visit(MethodDecl n) {
     n.t.accept(this);
-    n.i.accept(this);
+    n.id.accept(this);
     for ( int i = 0; i < n.fl.size(); i++ ) {
         n.fl.elementAt(i).accept(this);
     }
