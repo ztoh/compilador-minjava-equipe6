@@ -2,7 +2,7 @@ package table;
 
 import java.util.Hashtable;
 import java.util.Set;
-
+import java.util.Iterator;
 import symbol.Symbol;
 
 public class MethodTable extends Table{
@@ -36,6 +36,18 @@ public class MethodTable extends Table{
 	public Set<Symbol> keys() {
 		// TODO Auto-generated method stub
 		return dict.keySet();
+	}
+	
+	public String toString()
+	{
+		String retorno = "";
+		Iterator<MethodInfo> aux = this.dict.values().iterator();
+		//System.out.println("Tamanho do hash TESTE " + dict.size());
+		while (aux.hasNext()) {
+			retorno +=  aux.next().toString();
+			
+		}
+		return retorno;
 	}
 
 }

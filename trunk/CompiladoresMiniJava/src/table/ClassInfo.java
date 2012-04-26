@@ -81,6 +81,32 @@ public class ClassInfo extends Table{
 		return metodos.keys();
 	}
 	
+	public String toString()
+	{
+		//System.out.println("teste");
+		String retorno = "Nome "+ this.id;
+		if(this.extendedClass != null)
+		{
+			
+			retorno += " " + this.extendedClass;
+		}
+		//System.out.println("teste2");
+		//System.out.println(retorno);
+		retorno +=" " + this.atributos.toString();
+		retorno +=" " + this.metodos.toString();
+		//System.out.println(retorno);
+		//System.out.println("teste2");
+		return retorno;
+	}
 	
-
+	public void setatributos(VarTable k)
+	{
+		this.atributos = k;
+	}
+	
+	public void setmetodos(MethodTable k)
+	{
+		this.metodos = k;
+	}
+	
 }

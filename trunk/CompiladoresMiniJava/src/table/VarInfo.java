@@ -23,4 +23,11 @@ public class VarInfo {
 		return symbol;
 	}
 	
+	public String toString()
+	{
+		String retorno = "";
+		retorno += "Tipo " + type.toString() + " Id " + symbol.toString();
+		return retorno;
+	}
+	
 }
