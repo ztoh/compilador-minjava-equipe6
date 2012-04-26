@@ -91,7 +91,7 @@ public class PrettyPrintVisitor implements Visitor {
     System.out.print("  public ");
     n.t.accept(this);
     System.out.print(" ");
-    n.i.accept(this);
+    n.id.accept(this);
     System.out.print(" (");
     for ( int i = 0; i < n.fl.size(); i++ ) {
         n.fl.elementAt(i).accept(this);

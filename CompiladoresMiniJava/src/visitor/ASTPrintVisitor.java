@@ -103,7 +103,7 @@ public class ASTPrintVisitor implements Visitor {
 	System.out.print("MethodDecl(");
 	n.t.accept(this);
 	System.out.print(", ");
-	n.i.accept(this);
+	n.id.accept(this);
 	System.out.print(", (");
 	for ( int i = 0; i < n.fl.size(); i++ ) {
 	    n.fl.elementAt(i).accept(this);
