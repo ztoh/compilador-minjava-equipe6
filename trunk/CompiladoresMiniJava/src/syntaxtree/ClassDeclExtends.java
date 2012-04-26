@@ -26,6 +26,7 @@ public class ClassDeclExtends extends ClassDecl {
   
   public ClassInfo accept(ImperativeSymbolTableVisitor v)
   {
-	  return new ClassInfo(Symbol.symbol(i.toString()),Symbol.symbol(j.toString()));
+	  //return new ClassInfo(Symbol.symbol(i.toString()),Symbol.symbol(j.toString()));
+	  return (ClassInfo) v.visit(this);
   }
 }
