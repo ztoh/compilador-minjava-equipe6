@@ -19,12 +19,28 @@ import table.*;
 
 public class eg1
 {
-  public static void main(String args []) throws ParseException
+  public static void main(String args []) throws ParseException, FileNotFoundException
   {
+    try    {
+    /*String endereco = "D://teste.txt";
+    FileInputStream fi = new FileInputStream(endereco);
+    System.setIn(fi);*/
 	eg1 Analyzer  = new eg1(System.in);
 	Program x = Analyzer.Start();
 	Table k = x.accept(new ImperativeSymbolTableVisitor());
 	System.out.println(k.toString());
+	}
+	catch (ParseException e)
+      {
+        System.out.println("Erro Parser");
+        System.out.println(e.getMessage());
+
+      }
+      catch (FileNotFoundException e)
+      {
+        System.out.println("Arquivo não encontrado");
+        System.out.println(e.getMessage());
+      }
   }
 }
     
