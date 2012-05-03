@@ -1,5 +1,5 @@
 package symbol;
-//teste
+//teste2
 import java.util.Hashtable;
 
 public class Symbol {
