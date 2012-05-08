@@ -23,7 +23,8 @@ public class Identifier {
     return s;
   }
   
-  public Symbol accept(ImperativeSymbolTableVisitor v){
+  public Symbol accept(ImperativeSymbolTableVisitor v)
+  {
 	  return Symbol.symbol(s.toString());
   }
 }

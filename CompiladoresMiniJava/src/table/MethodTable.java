@@ -1,8 +1,11 @@
 package table;
 
 import java.util.Hashtable;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Set;
+
+import error.Erro;
+
 import symbol.Symbol;
 
 public class MethodTable extends Table{
@@ -20,6 +23,10 @@ public class MethodTable extends Table{
 		if(dict.get(key) == null)
 		{
 			dict.put(key, (MethodInfo)value);	
+		}
+		else
+		{
+			Erro.raiseError("Metodo "+ key.toString() + " ja declarado");
 		}
 		//Else para indicar que o metodo ja foi definido
 		// TODO Auto-generated method stub

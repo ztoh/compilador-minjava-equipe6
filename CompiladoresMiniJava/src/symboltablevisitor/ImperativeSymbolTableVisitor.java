@@ -49,13 +49,13 @@ public class ImperativeSymbolTableVisitor implements SymbolTableVisitor {
 		MethodInfo s1;
 		MethodTable k1 = new MethodTable();
 		for (int i = 0; i < n.vl.size(); i++) {
-			 s = n.vl.elementAt(i).accept(this);
-			 k.put(Symbol.symbol(s.toString()), s);
+			s = n.vl.elementAt(i).accept(this);
+			k.put(Symbol.symbol(n.vl.elementAt(i).toString()), s);
 		}
 		
 		for (int i = 0; i < n.ml.size() ; i++) {
 			s1 = (MethodInfo)n.ml.elementAt(i).accept(this);
-			k1.put(Symbol.symbol(s1.toString()), s1);
+			k1.put(Symbol.symbol(n.ml.elementAt(i).toString()), s1);
 		}
 		
 		// TODO Auto-generated method stub
@@ -73,12 +73,12 @@ public class ImperativeSymbolTableVisitor implements SymbolTableVisitor {
 		MethodTable k1 = new MethodTable();
 		for (int i = 0; i < n.vl.size(); i++) {
 			 s = n.vl.elementAt(i).accept(this);
-			 k.put(Symbol.symbol(s.toString()), s);
+			 k.put(Symbol.symbol(n.vl.elementAt(i).toString()), s);
 		}
 		
 		for (int i = 0; i < n.ml.size() ; i++) {
 			s1 = (MethodInfo)n.ml.elementAt(i).accept(this);
-			k1.put(Symbol.symbol(s1.toString()), s1);
+			k1.put(Symbol.symbol(n.ml.elementAt(i).toString()), s1);
 		}
 		
 		// TODO Auto-generated method stub

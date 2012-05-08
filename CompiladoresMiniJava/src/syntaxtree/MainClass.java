@@ -2,6 +2,7 @@ package syntaxtree;
 import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.ClassInfo;
+import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -25,6 +26,11 @@ public ClassInfo accept(ImperativeSymbolTableVisitor imperativeSymbolTableVisito
 		Symbol id) {
 	// TODO Auto-generated method stub
 	return new ClassInfo(id);
+}
+
+public void accept(TypeCheckVisitor concreteTypeCheckVisitor) {
+	// TODO Auto-generated method stub
+	
 }
 }
 

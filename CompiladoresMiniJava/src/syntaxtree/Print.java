@@ -1,4 +1,5 @@
 package syntaxtree;
+import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -15,5 +16,11 @@ public class Print extends Statement {
 
   public Type accept(TypeVisitor v) {
     return v.visit(this);
+  }
+
+  @Override
+  public void accept(TypeCheckVisitor concreteTypeCheckVisitor) {
+	// TODO Auto-generated method stub
+	
   }
 }

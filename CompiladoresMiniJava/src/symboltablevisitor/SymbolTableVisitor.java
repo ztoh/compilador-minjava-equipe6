@@ -1,32 +1,17 @@
 package symboltablevisitor;
 
 import symbol.Symbol;
-import syntaxtree.And;
-import syntaxtree.ArrayAssign;
-import syntaxtree.Assign;
-import syntaxtree.Block;
 import syntaxtree.BooleanType;
 import syntaxtree.ClassDeclExtends;
 import syntaxtree.ClassDeclSimple;
 import syntaxtree.Formal;
 import syntaxtree.Identifier;
 import syntaxtree.IdentifierType;
-import syntaxtree.If;
 import syntaxtree.IntArrayType;
-import syntaxtree.IntegerLiteral;
 import syntaxtree.IntegerType;
-import syntaxtree.LessThan;
-import syntaxtree.MainClass;
 import syntaxtree.MethodDecl;
-import syntaxtree.Minus;
-import syntaxtree.Plus;
-import syntaxtree.Print;
 import syntaxtree.Program;
-import syntaxtree.Times;
 import syntaxtree.VarDecl;
-import syntaxtree.While;
-import table.ClassInfo;
-import table.ClassTable;
 import table.Table;
 import table.VarInfo;
 

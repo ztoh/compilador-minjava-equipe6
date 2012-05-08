@@ -1,8 +1,11 @@
 package table;
 
 import java.util.Hashtable;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Set;
+
+import error.Erro;
+
 import symbol.Symbol;
 
 public class ClassTable extends Table{
@@ -18,6 +21,7 @@ public class ClassTable extends Table{
 	public void put(Symbol key, Object value) {
 		if(dict.get(key) != null)
 		{
+			Erro.raiseError("Classe " + key.toString() +" ja adicionada");
 			//Erro, classe ja adicionada
 		}
 		

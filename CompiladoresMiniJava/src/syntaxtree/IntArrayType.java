@@ -13,11 +13,13 @@ public class IntArrayType extends Type {
     return v.visit(this);
   }
   
-  public Symbol accept(ImperativeSymbolTableVisitor v){
+  public Symbol accept(ImperativeSymbolTableVisitor v)
+  {
 	  return Symbol.symbol(this.toString());
   }
   
-  public String toString(){
-	  return "Array de inteiros";
+  public String toString()
+  {
+	  return "Array de Inteiros";	
   }
 }
