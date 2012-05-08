@@ -1,9 +1,9 @@
 package syntaxtree;
 import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
+import table.VarInfo;
 import visitor.Visitor;
 import visitor.TypeVisitor;
-import table.VarInfo;
 
 public class Formal {
   public Type t;
@@ -21,7 +21,8 @@ public class Formal {
     return v.visit(this);
   }
   
-  public VarInfo accept(ImperativeSymbolTableVisitor v){
-	  return new VarInfo(t, Symbol.symbol(i.toString()));
+  public VarInfo accept(ImperativeSymbolTableVisitor v)
+  {
+	  return new VarInfo(t,Symbol.symbol(i.toString()));
   }
 }

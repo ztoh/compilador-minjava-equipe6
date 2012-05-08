@@ -1,7 +1,8 @@
 package syntaxtree;
-import symbol.Symbol;
+//import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.ClassInfo;
+import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -24,7 +25,21 @@ public class ClassDeclSimple extends ClassDecl {
   
   public ClassInfo accept(ImperativeSymbolTableVisitor v)
   {
-	  //return new ClassInfo(Symbol.symbol(i.toString()));
+	  //ClassInfo k = new ClassInfo(Symbol.symbol(i.toString()));
 	  return (ClassInfo) v.visit(this);
+	  
+	  //return k;
+	  //return new ClassInfo(Symbol.symbol(i.toString()));
+  }
+  
+  public String toString()
+  {
+	  return this.i.toString();
+  }
+
+  @Override
+  public void accept(TypeCheckVisitor v) {
+	  // TODO Auto-generated method stub
+	
   }
 }

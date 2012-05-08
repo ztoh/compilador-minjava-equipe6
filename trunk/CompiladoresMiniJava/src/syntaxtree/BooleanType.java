@@ -13,11 +13,13 @@ public class BooleanType extends Type {
     return v.visit(this);
   }
   
-  public Symbol accept (ImperativeSymbolTableVisitor v){
+  public Symbol accept(ImperativeSymbolTableVisitor v)
+  {
 	  return Symbol.symbol(this.toString());
   }
   
-  public String toString(){
+  public String toString ()
+  {
 	  return "Boolean";
   }
 }

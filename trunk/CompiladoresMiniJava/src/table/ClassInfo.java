@@ -1,5 +1,6 @@
 package table;
 
+import error.*;
 import java.util.Set;
 
 import symbol.Symbol;
@@ -8,41 +9,52 @@ public class ClassInfo extends Table{
 	public Symbol id;
 	public Symbol extendedClass;
 	//public Symbol metodoatual;
+	//public Symbol metodoAtual;
 	public VarTable atributos;
 	public MethodTable metodos;
+	public boolean atualmenteMetodo;
 	
 	public ClassInfo(Symbol id)
 	{
 		atributos = new VarTable();
 		metodos = new MethodTable();
 		this.id = id;
+		this.atualmenteMetodo = true;
 		
 	}
+	
 	
 	public ClassInfo(Symbol id, Symbol extendedClass)
 	{
 		this(id);
 		this.extendedClass = extendedClass;
 	}
+	
+	public void setatualmenteMetodo(boolean x)
+	{
+		this.atualmenteMetodo = x;
+	}
 
 	@Override
 	public void put(Symbol key, Object value) {
-		if(atualmenteMetodo())
+		if(this.atualmenteMetodo)
 		{
 			if( metodos.get(key) != null)
 			{
-				//Ja foi adicionado, erro
+				Erro.raiseError("Metodo " + key.toString() +" ja declarado");
 			}
 			else
 			{
 				metodos.put(key, value);
 			}
+
 		}
-		
+				
 		else
 		{
 			if(atributos.get(key) != null)
 			{
+				Erro.raiseError("Variavel " + key.toString() +" ja declarada");
 				//Erro, ja foi adicionado
 			}
 			else
@@ -50,14 +62,12 @@ public class ClassInfo extends Table{
 				atributos.put(key, value);
 			}
 		}
+		
+		
 		// TODO Auto-generated method stub
 		
 	}
 
-	private boolean atualmenteMetodo() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 	@Override
 	public Object get(Symbol key) {
@@ -109,4 +119,6 @@ public class ClassInfo extends Table{
 		this.metodos = k;
 	}
 	
+	
+
 }

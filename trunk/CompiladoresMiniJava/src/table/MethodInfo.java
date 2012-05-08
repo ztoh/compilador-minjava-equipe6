@@ -3,6 +3,8 @@ package table;
 //import java.util.ArrayList;
 import java.util.Set;
 
+import error.Erro;
+
 import symbol.Symbol;
 
 public class MethodInfo extends Table{
@@ -30,6 +32,7 @@ public class MethodInfo extends Table{
 		{
 			if(paramEntrada.get(key) != null)
 			{
+				Erro.raiseError("Variavel de parametro" + key.toString() +" ja declarada");
 				//Erro, ja foi adicionado
 			}
 			else
@@ -42,6 +45,7 @@ public class MethodInfo extends Table{
 		{
 			if(listaDeVariaveis.get(key) != null || paramEntrada.get(key) != null)
 			{
+				Erro.raiseError("Variavel "+ key.toString() + " ja declarada ou no escopo do metodo ou como parametro");
 				//Erro, ja definido antes no parametro ou no proprio metodo
 			}
 			else

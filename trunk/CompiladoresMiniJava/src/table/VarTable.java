@@ -2,6 +2,8 @@ package table;
 
 
 import java.util.*;
+
+import error.Erro;
 import symbol.Symbol;
 
 public class VarTable extends Table {
@@ -14,7 +16,15 @@ public class VarTable extends Table {
 	
 	@Override
 	public void put(Symbol key, Object value) {
-		var.put(key, (VarInfo)value);
+		if(this.var.get(key) == null)
+		{
+			var.put(key, (VarInfo)value);
+		}
+		else
+		{
+			Erro.raiseError("Variavel "+ key.toString() + " ja declarada");
+		}
+		//Apenas para valer a primeira declaracao
 		// TODO Auto-generated method stub
 	}
 	@Override

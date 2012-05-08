@@ -1,6 +1,7 @@
 package syntaxtree;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.Table;
+import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -28,5 +29,15 @@ public class MethodDecl {
   public Table accept(ImperativeSymbolTableVisitor n)
   {
 	  return n.visit(this);
+  }
+  
+  public String toString()
+  {
+	  return this.id.toString();
+  }
+
+  public void accept(TypeCheckVisitor v) {
+	  // TODO Auto-generated method stub
+	
   }
 }
