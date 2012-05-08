@@ -37,7 +37,7 @@ import syntaxtree.This;
 import syntaxtree.Times;
 import syntaxtree.True;
 import syntaxtree.While;
-import table.ClassInfo;
+//import table.ClassInfo;
 import table.ClassTable;
 import table.Table;
 
@@ -80,7 +80,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public void visit(ClassDeclSimple n) {
-		ClassInfo k = (ClassInfo) this.beginScope(Symbol.symbol(n.i.toString()));
+		//ClassInfo k = (ClassInfo) this.beginScope(Symbol.symbol(n.i.toString()));
 		
 		// TODO Auto-generated method stub
 		for (int i = 0; i < n.ml.size(); i++) {
@@ -94,7 +94,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 	@Override
 	public void visit(ClassDeclExtends n) {
 		
-		ClassInfo k = (ClassInfo) this.beginScope(Symbol.symbol(n.i.toString()));
+		//ClassInfo k = (ClassInfo) this.beginScope(Symbol.symbol(n.i.toString()));
 
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
