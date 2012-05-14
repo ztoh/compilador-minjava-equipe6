@@ -2,6 +2,7 @@ package syntaxtree;
 import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.VarInfo;
+import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -24,5 +25,10 @@ public class Formal {
   public VarInfo accept(ImperativeSymbolTableVisitor v)
   {
 	  return new VarInfo(t,Symbol.symbol(i.toString()));
+  }
+
+  public Symbol accept(TypeCheckVisitor v) {
+	// TODO Auto-generated method stub
+	return v.visit(this);
   }
 }

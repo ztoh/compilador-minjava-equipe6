@@ -38,6 +38,10 @@ public class VarTable extends Table {
 		return var.keySet();
 		// TODO Auto-generated method stub
 	}
+	public int size()
+	{
+		return var.size();
+	}
 	
 	public String toString()
 	{

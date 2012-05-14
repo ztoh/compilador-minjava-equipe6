@@ -1,4 +1,6 @@
 package syntaxtree;
+import symbol.Symbol;
+import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -19,5 +21,11 @@ public class IdentifierExp extends Exp {
   public String toString ()
   {
 	  return s;
+  }
+  
+  public Symbol accept(TypeCheckVisitor v) {
+		return v.visit(this);
+		// TODO Auto-generated method stub
+		
   }
 }

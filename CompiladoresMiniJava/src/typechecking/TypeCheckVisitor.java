@@ -12,6 +12,7 @@ import syntaxtree.ClassDeclExtends;
 import syntaxtree.ClassDeclSimple;
 import syntaxtree.False;
 import syntaxtree.Formal;
+import syntaxtree.Identifier;
 import syntaxtree.IdentifierExp;
 import syntaxtree.IdentifierType;
 import syntaxtree.If;
@@ -67,6 +68,7 @@ public interface TypeCheckVisitor {
 	public Symbol visit( IdentifierType n);
 	public Symbol visit( IntegerType n);
 	public Symbol visit( IntArrayType n);
+	public Symbol visit( Identifier n);
 	
 	
 	

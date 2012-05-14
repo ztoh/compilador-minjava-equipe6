@@ -1,6 +1,7 @@
 package syntaxtree;
 import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
+import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -26,5 +27,10 @@ public class Identifier {
   public Symbol accept(ImperativeSymbolTableVisitor v)
   {
 	  return Symbol.symbol(s.toString());
+  }
+
+  public Symbol accept(TypeCheckVisitor v) {
+	// TODO Auto-generated method stub
+	  return v.visit(this);
   }
 }
