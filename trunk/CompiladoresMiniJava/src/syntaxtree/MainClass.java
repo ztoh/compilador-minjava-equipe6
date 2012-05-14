@@ -29,6 +29,7 @@ public ClassInfo accept(ImperativeSymbolTableVisitor imperativeSymbolTableVisito
 }
 
 public void accept(TypeCheckVisitor concreteTypeCheckVisitor) {
+	concreteTypeCheckVisitor.visit(this);
 	// TODO Auto-generated method stub
 	
 }
