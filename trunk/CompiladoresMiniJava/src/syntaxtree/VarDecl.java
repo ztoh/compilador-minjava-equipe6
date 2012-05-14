@@ -2,7 +2,7 @@ package syntaxtree;
 import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.VarInfo;
-import typechecking.TypeCheckVisitor;
+//import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
