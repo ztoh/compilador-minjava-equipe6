@@ -54,13 +54,18 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 	public ClassTable visit(Program n) {
 		scope = new Stack<Table>();
 		ImperativeSymbolTableVisitor vis = new ImperativeSymbolTableVisitor();
-		Table k = vis.visit(n);
+		contexto =(ClassTable) vis.visit(n);
 		n.m.accept(this);
 		for (int i = 0; i < n.cl.size(); i++) {
 			n.cl.elementAt(i).accept(this);
 		}
 		// TODO Auto-generated method stub
-		return (ClassTable) k;
+		return contexto;
+	}
+	
+	public boolean estaNaMain()
+	{
+		return scope.isEmpty();
 	}
 	
 	public Table beginScope(Symbol key)
@@ -156,6 +161,10 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public void visit(Print n) {
+		if(n.e == null)
+		{
+			System.out.println("TESTE");
+		}
 		if(!n.e.accept(this).equals(new IntegerType().toString()))
 		{
 			Erro.raiseError("Tipo inteiro nao encontrado");
@@ -166,9 +175,9 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public void visit(Assign n) {
-		if(false)//Esta no metodo principal
+		if(estaNaMain())//Esta no metodo principal
 		{
-			
+			Erro.raiseError("Variavel nao declarada");
 		}
 		else
 		{
@@ -183,9 +192,9 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public void visit(ArrayAssign n) {
-		if(false)//Esta no metodo principal
+		if(estaNaMain())//Esta no metodo principal
 		{
-			
+			Erro.raiseError("Variavel nao declarada");
 		}
 		else
 		{
@@ -313,9 +322,10 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public Symbol visit(This n) {
-		if(false)//esta na main
+		if(estaNaMain())//esta na main
 		{
-			return null;
+			Erro.raiseError("Erro: referencia this no metodo principal");
+			return Symbol.symbol("");
 		}
 		else
 		{
@@ -345,10 +355,10 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public Symbol visit(NewObject n) {
-		ClassInfo k = (ClassInfo) contexto.get(Symbol.symbol(n.toString()));
+		ClassInfo k = (ClassInfo) contexto.get(Symbol.symbol(n.i.toString()));
 		if( k == null)
 		{
-			Erro.raiseError("Classe nao declarada");
+			Erro.raiseError("Classe nao declarada1");
 			return Symbol.symbol("");
 			
 		}
@@ -394,13 +404,26 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 				if(n.el.size() == j.paramEntrada.size())
 				{
 					for (int i = 0; i < n.el.size(); i++) {
-						/*if(n.el.elementAt(i).accept(this).equals(j.get(key)))
+						if(!n.el.elementAt(i).accept(this).equals(j.parametroDeEntrada.get(i)))
 						{
-							
-						}*/
+							Erro.raiseError("Tipo nao bate com parametro de entrada \n Encontrado "+ n.el.elementAt(i).accept(this)+ " e " + j.parametroDeEntrada.get(i).toString());
+						}
 					}
+					return j.retorno;
+				}
+				else
+				{
+					Erro.raiseError("Esta faltando parametro ou tem a mais");
 				}
 			}
+			else
+			{
+				Erro.raiseError("Metodo nao declarado");
+			}
+		}
+		else
+		{
+			Erro.raiseError("Classe nao declarada2");
 		}
 		
 		return null;
@@ -408,38 +431,42 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public Symbol visit(Not n) {
+		if(!n.e.accept(this).equals(new BooleanType()))
+		{
+			Erro.raiseError("Tipo booleano esperado na expressão com Not");
+		}
 		// TODO Auto-generated method stub
-		return null;
+		return Symbol.symbol(new BooleanType().toString());
 	}
 
 	@Override
 	public Symbol visit(BooleanType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return Symbol.symbol(n.toString());
 	}
 
 	@Override
 	public Symbol visit(IdentifierType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return Symbol.symbol(n.toString());
 	}
 
 	@Override
 	public Symbol visit(IntegerType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return Symbol.symbol(n.toString());
 	}
 
 	@Override
 	public Symbol visit(IntArrayType n) {
 		// TODO Auto-generated method stub
-		return null;
+		return Symbol.symbol(n.toString());
 	}
 
 	@Override
 	public Symbol visit(Identifier n) {
 		// TODO Auto-generated method stub
-		return null;
+		return Symbol.symbol(n.toString());
 	}
 
 }

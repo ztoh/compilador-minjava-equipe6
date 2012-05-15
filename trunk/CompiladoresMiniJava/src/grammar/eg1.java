@@ -4,6 +4,7 @@ import syntaxtree.*;
 import visitor.*;
 import symboltablevisitor.*;
 import table.*;
+import typechecking.*;
 public class eg1 implements eg1Constants {
   public static void main(String[] args) throws ParseException
   {
@@ -12,6 +13,9 @@ public class eg1 implements eg1Constants {
         Program x = Analyzer.Start();
         Table k = x.accept(new ImperativeSymbolTableVisitor());
         System.out.println(k.toString());
+        ConcreteTypeCheckVisitor j = new ConcreteTypeCheckVisitor();
+        j.visit(x);
+
   }
 
   final public Program Start() throws ParseException {
@@ -539,20 +543,6 @@ public class eg1 implements eg1Constants {
     finally { jj_save(0, xla); }
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_17() {
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_scan_token(ID)) return true;
-    return false;
-  }
-
   private boolean jj_3R_16() {
     if (jj_scan_token(LSQPAREN)) return true;
     return false;
@@ -590,6 +580,20 @@ public class eg1 implements eg1Constants {
     if (jj_3R_15()) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_17() {
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    if (jj_scan_token(ID)) return true;
     return false;
   }
 

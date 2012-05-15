@@ -4,6 +4,7 @@ import syntaxtree.*;
 import visitor.*;
 import symboltablevisitor.*;
 import table.*;
+import typechecking.*;
 
 /** Token Manager. */
 public class eg1TokenManager implements eg1Constants
