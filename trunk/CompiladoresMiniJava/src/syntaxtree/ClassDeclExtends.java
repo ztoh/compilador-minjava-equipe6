@@ -38,6 +38,7 @@ public class ClassDeclExtends extends ClassDecl {
 
 @Override
 public void accept(TypeCheckVisitor v) {
+	v.visit(this);
 	// TODO Auto-generated method stub
 	
 }

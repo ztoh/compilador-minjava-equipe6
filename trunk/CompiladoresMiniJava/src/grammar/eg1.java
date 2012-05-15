@@ -11,8 +11,8 @@ public class eg1 implements eg1Constants {
     //System.out.println("TESTE");
         eg1 Analyzer  = new eg1(System.in);
         Program x = Analyzer.Start();
-        Table k = x.accept(new ImperativeSymbolTableVisitor());
-        System.out.println(k.toString());
+        //Table k = x.accept(new ImperativeSymbolTableVisitor());
+        //System.out.println(k.toString());
         ConcreteTypeCheckVisitor j = new ConcreteTypeCheckVisitor();
         j.visit(x);
 

@@ -91,8 +91,9 @@ public class ImperativeSymbolTableVisitor implements SymbolTableVisitor {
 	@Override
 	public Table visit(MethodDecl n) {
 		MethodInfo s = new MethodInfo(Symbol.symbol(n.t.toString()), Symbol.symbol(n.id.toString()));
+		s.setisParametro(true);
 		for (int i = 0; i < n.fl.size(); i++) {
-			s.put(Symbol.symbol(n.fl.elementAt(i).toString()),n.fl.elementAt(i).accept(this));	
+			s.put(Symbol.symbol(n.fl.elementAt(i).i.toString()),n.fl.elementAt(i).accept(this));	
 			
 		}
 		s.setisParametro(false);

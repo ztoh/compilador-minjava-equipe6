@@ -39,7 +39,6 @@ public class MethodInfo extends Table{
 			}
 			else
 			{
-				
 				paramEntrada.put(key, value);
 				parametroDeEntrada.add(Symbol.symbol(value.toString()));
 			}

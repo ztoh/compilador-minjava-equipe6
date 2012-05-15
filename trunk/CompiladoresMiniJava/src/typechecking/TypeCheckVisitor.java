@@ -6,6 +6,7 @@ import syntaxtree.ArrayAssign;
 import syntaxtree.ArrayLength;
 import syntaxtree.ArrayLookup;
 import syntaxtree.Assign;
+import syntaxtree.Block;
 import syntaxtree.BooleanType;
 import syntaxtree.Call;
 import syntaxtree.ClassDeclExtends;
@@ -42,6 +43,7 @@ public interface TypeCheckVisitor {
 	public void visit(ClassDeclSimple n);
 	public void visit(ClassDeclExtends n);
 	public void visit(MethodDecl n);
+	public void visit(Block n);
 	public void visit( If n);
 	public void visit(While n);
 	public void visit(Print n);

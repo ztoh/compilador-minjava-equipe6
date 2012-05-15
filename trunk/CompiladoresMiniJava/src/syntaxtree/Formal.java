@@ -31,4 +31,9 @@ public class Formal {
 	// TODO Auto-generated method stub
 	return v.visit(this);
   }
+  
+  /*public String toString()
+  {
+	  return this.i.toString();
+  }*/
 }
