@@ -1,6 +1,7 @@
 package table;
 
 //import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.Set;
 
 import error.Erro;
@@ -9,7 +10,7 @@ import symbol.Symbol;
 
 public class MethodInfo extends Table{
 
-	//public ArrayList<Symbol> parametroDeEntrada;
+	public ArrayList<Symbol> parametroDeEntrada;
 	public Symbol retorno;
 	public VarTable paramEntrada;
 	public VarTable listaDeVariaveis;
@@ -21,6 +22,7 @@ public class MethodInfo extends Table{
 		this.retorno = retorno;
 		paramEntrada = new VarTable();
 		listaDeVariaveis = new VarTable();
+		parametroDeEntrada = new ArrayList<Symbol>();
 		this.id = id;
 		this.isParametro = true;
 		
@@ -37,8 +39,9 @@ public class MethodInfo extends Table{
 			}
 			else
 			{
+				
 				paramEntrada.put(key, value);
-				//parametroDeEntrada.add(key);
+				parametroDeEntrada.add(Symbol.symbol(value.toString()));
 			}
 		}
 		else

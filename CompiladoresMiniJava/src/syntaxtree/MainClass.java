@@ -22,16 +22,16 @@ public class MainClass {
     return v.visit(this);
   }
 
-public ClassInfo accept(ImperativeSymbolTableVisitor imperativeSymbolTableVisitor,
-		Symbol id) {
+  public ClassInfo accept(ImperativeSymbolTableVisitor imperativeSymbolTableVisitor,
+    Symbol id) {
 	// TODO Auto-generated method stub
 	return new ClassInfo(id);
-}
+  }
 
-public void accept(TypeCheckVisitor concreteTypeCheckVisitor) {
-	concreteTypeCheckVisitor.visit(this);
+  public void accept(TypeCheckVisitor v) {
+    v.visit(this);
 	// TODO Auto-generated method stub
 	
-}
+  }
 }
 
