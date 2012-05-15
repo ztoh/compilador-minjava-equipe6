@@ -19,7 +19,8 @@ public class Block extends Statement {
   }
 
   @Override
-  public void accept(TypeCheckVisitor concreteTypeCheckVisitor) {
+  public void accept(TypeCheckVisitor v) {
+	  v.visit(this);
 	// TODO Auto-generated method stub
 	
 }

@@ -8,8 +8,7 @@ import symbol.Symbol;
 public class ClassInfo extends Table{
 	public Symbol id;
 	public Symbol extendedClass;
-	//public Symbol metodoatual;
-	//public Symbol metodoAtual;
+	public Symbol metodoAtual;
 	public VarTable atributos;
 	public MethodTable metodos;
 	public boolean atualmenteMetodo;
@@ -23,11 +22,24 @@ public class ClassInfo extends Table{
 		
 	}
 	
-	
 	public ClassInfo(Symbol id, Symbol extendedClass)
 	{
 		this(id);
 		this.extendedClass = extendedClass;
+	}
+	public void setmetodoAtual( Symbol x)
+	{
+		this.metodoAtual = x;
+	}
+	
+	public Symbol getmetodoAtual()
+	{
+		return this.metodoAtual;
+	}
+	
+	public MethodInfo retornaMetodoAtual ()
+	{
+		return (MethodInfo)this.getMetodo(this.getmetodoAtual());
 	}
 	
 	public void setatualmenteMetodo(boolean x)

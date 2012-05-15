@@ -24,8 +24,8 @@ public class eg1
     //System.out.println("TESTE");
 	eg1 Analyzer  = new eg1(System.in);
 	Program x = Analyzer.Start();
-	Table k = x.accept(new ImperativeSymbolTableVisitor());
-	System.out.println(k.toString());
+	//Table k = x.accept(new ImperativeSymbolTableVisitor());
+	//System.out.println(k.toString());
 	ConcreteTypeCheckVisitor j = new ConcreteTypeCheckVisitor();
 	j.visit(x);
 	
@@ -40,7 +40,7 @@ SPECIAL_TOKEN:
 {
   
  < COMMENT: "//" (< ALL >)* (("\r") | ("\n")) >
-| < COMMENT1: "/*" (< ALL >)* "*/" >
+| < COMMENT1: "/*" (< ALL >)*  "*/" >
 }
 
 TOKEN :
@@ -76,7 +76,7 @@ TOKEN :
 | < PRINT: "System.out.println" >
 | < VOID: "void" >
 | < EXTENDS: "extends" >
-| < #ALL:[" "-"~"] >
+| < #ALL: (	[" "-"~"]) >
 | < #DIGIT: ["0"-"9"] > 
 | < NUM: (< DIGIT >)+ >
 | < ID: (["a"-"z"] | ["A"-"Z"]) (["a"-"z"] | ["A"-"Z"] | "_" | < DIGIT >)* >
