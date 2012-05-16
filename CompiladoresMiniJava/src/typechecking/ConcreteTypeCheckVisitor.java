@@ -16,6 +16,7 @@ import syntaxtree.BooleanType;
 import syntaxtree.Call;
 import syntaxtree.ClassDeclExtends;
 import syntaxtree.ClassDeclSimple;
+import syntaxtree.Exp;
 import syntaxtree.False;
 import syntaxtree.Formal;
 import syntaxtree.Identifier;
@@ -459,15 +460,35 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 					for (int i = 0; i < n.el.size(); i++) {
 						if(!n.el.elementAt(i).accept(this).equals(j.parametroDeEntrada.get(i)))
 						{
-							Erro.raiseError("Tipo incompativel no parametro");
+							if(contexto.get(j.parametroDeEntrada.get(i)) != null)//Verificar se o parametro é subclasse da classe esperada
+							{
+								if(!verificarParentesco(n.el.elementAt(i).accept(this),j.parametroDeEntrada.get(i) ))
+								{
+									Erro.raiseError("Tipo incompativel no parametro");
+								}
+							}
 						}
 					}
-					//System.out.println(j.retorno);
 					return j.retorno;
 				}
 			}
 		}
 		return Symbol.symbol("");
+	}
+
+	public boolean verificarParentesco(Symbol parametro, Symbol classe) {
+		ClassInfo k = (ClassInfo)contexto.get(parametro);
+		while( k != null)
+		{
+			if( k.extendedClass.equals(classe))
+			{
+				return true;
+			}
+			k = (ClassInfo)contexto.get(k.extendedClass);
+			
+		}
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	public MethodInfo verificarMetodo(ClassInfo x,String n) {
