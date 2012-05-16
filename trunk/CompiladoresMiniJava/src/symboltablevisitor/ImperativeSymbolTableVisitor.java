@@ -82,7 +82,7 @@ public class ImperativeSymbolTableVisitor implements SymbolTableVisitor {
 		}
 		
 		// TODO Auto-generated method stub
-		ClassInfo retorno = new ClassInfo(Symbol.symbol(n.i.toString()));
+		ClassInfo retorno = new ClassInfo(Symbol.symbol(n.i.toString()),Symbol.symbol(n.j.toString()));
 		retorno.setatributos(k);
 		retorno.setmetodos(k1);
 		return retorno;

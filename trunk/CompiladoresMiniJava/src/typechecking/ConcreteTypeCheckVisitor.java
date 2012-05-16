@@ -170,6 +170,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public void visit(While n) {
+		System.out.println("while");
 		if(!n.e.accept(this).equals(new BooleanType().toString()))
 		{
 			Erro.raiseError("Tipo booleano nao encontrado");
@@ -194,8 +195,6 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 	@Override
 	public void visit(Assign n) {
 		System.out.println("Assign");
-		System.out.println(n.i.toString());
-		System.out.println(n.e.accept(this).toString());
 		if(estaNaMain())//Esta no metodo principal
 		{
 			Erro.raiseError("Variavel nao declarada");
@@ -203,9 +202,12 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 		
 		else
 		{
+			//System.out.println("TESTE NO ASSIGN");
+			//System.out.println(n.i.accept(this) + " ALGO");
+			//System.out.println(n.e.accept(this));	
 			if(!n.i.accept(this).equals(n.e.accept(this)))
 			{
-				Erro.raiseError("Atribuicao de 2 tipos diferentes");
+				Erro.raiseError("Atribuicao de 2 tipos diferentes. Primeiro "+n.i.accept(this) + "Segundo " +n.e.accept(this));
 			}
 		}
 		// TODO Auto-generated method stub
@@ -214,6 +216,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public void visit(ArrayAssign n) {
+		System.out.println("arrayassign");
 		if(estaNaMain())//Esta no metodo principal
 		{
 			Erro.raiseError("Variavel nao declarada");
@@ -243,7 +246,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 	@Override
 	public Symbol visit(Formal n) {
 		// TODO Auto-generated method stub
-		return n.accept(this);
+		return Symbol.symbol(n.t.toString());
 	}
 
 	@Override
@@ -370,27 +373,17 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 		}
 		ClassInfo k = (ClassInfo) scope.peek();
 		MethodInfo j = k.retornaMetodoAtual();
-		//System.out.println(k.toString());
-		//System.out.println(j.toString());
-		//System.out.println(n.s);
 		VarInfo x = (VarInfo)j.paramEntrada.get(Symbol.symbol(n.s));
-		for (int i = 0; i < j.parametroDeEntrada.size(); i++) {
-			//System.out.println(j.parametroDeEntrada.get(i));
-		}
-		//System.out.println(x);
-		//System.out.println("CHEGOU EXATAMANTE AQUI");
+
 		if( x == null)
 		{
-			//System.out.println(x);
 			x = (VarInfo)j.listaDeVariaveis.get(Symbol.symbol(n.s));
 			if( x == null)
 			{
-				//System.out.println(x);
 				x = (VarInfo)k.get(Symbol.symbol(n.s));
 				if( x == null)
 				{
-					//System.out.println(x);
-					Erro.raiseError("Variavel nao declarada");
+					return this.checarAtributoSuper(n.s);
 				}
 			}
 			
@@ -421,15 +414,13 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 			return Symbol.symbol("");
 			
 		}
-		//System.out.println("new object2");
-		//System.out.println(k.id);
 		// TODO Auto-generated method stub
 		return k.id;
 	}
 
 	@Override
 	public Symbol visit(NewArray n) {
-		if(n.e.accept(this).equals(new IntegerType()))
+		if(!n.e.accept(this).equals(Symbol.symbol(new IntegerType().toString())))
 		{
 			Erro.raiseError("Int esperado para descrever o tamanho do array");
 		}
@@ -460,7 +451,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 		ClassInfo k = (ClassInfo)contexto.get(n.e.accept(this));
 		if(k != null)
 		{
-			MethodInfo j = (MethodInfo)k.getMetodo(Symbol.symbol(n.i.toString()));
+			MethodInfo j = verificarMetodo(k,n.i.toString());//(MethodInfo)k.getMetodo(Symbol.symbol(n.i.toString()));
 			if( j != null)
 			{
 				if(n.el.size() == j.parametroDeEntrada.size())
@@ -477,8 +468,22 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 			}
 		}
 		return Symbol.symbol("");
-		
-		
+	}
+
+	public MethodInfo verificarMetodo(ClassInfo x,String n) {
+		ClassInfo k = x;
+		MethodInfo j;
+		do{
+			j = (MethodInfo)k.getMetodo(Symbol.symbol(n));
+			if( j != null)
+			{
+				//System.out.println("OLHAOLHAOLHA");
+				return j;
+			}
+			k = (ClassInfo)contexto.get(k.extendedClass);
+		}while(!k.extendedClass.toString().equals(""));
+		// TODO Auto-generated method stub
+		return j;
 	}
 
 	@Override
@@ -524,8 +529,52 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 
 	@Override
 	public Symbol visit(Identifier n) {//Falta buscar o tipo da variavel ainda
-		return Symbol.symbol(n.s);
+		
+		if(estaNaMain())
+		{
+			Erro.raiseError("Variavel nao declarada (estamos na main)");
+			return Symbol.symbol("");
+		}
+		
+		ClassInfo k = (ClassInfo) scope.peek();
+		MethodInfo j = k.retornaMetodoAtual();
+		VarInfo x = (VarInfo)j.paramEntrada.get(Symbol.symbol(n.s));
+		
+		if( x == null)
+		{
+			x = (VarInfo)j.listaDeVariaveis.get(Symbol.symbol(n.s));
+			if(x == null)
+			{
+				x = (VarInfo)k.get(Symbol.symbol(n.s));
+				if(x == null)
+				{
+					//Erro.raiseError("Variavel "+n.s+ " nao declarada");
+					return checarAtributoSuper(n.s);
+				}
+			}
+		}
+		
+		return Symbol.symbol(x.gettype().toString());
 		// TODO Auto-generated method stub
+	}
+
+	public Symbol checarAtributoSuper(String n) {
+		ClassInfo k = (ClassInfo)scope.peek();
+		VarInfo x;
+		while(!k.extendedClass.equals(Symbol.symbol("")))
+		{
+			//System.out.println("Super");
+			k = (ClassInfo)beginScope(k.extendedClass);
+			x = (VarInfo)k.get(Symbol.symbol(n));
+			endScope();
+			if( x!= null)
+			{
+				return Symbol.symbol(x.gettype().toString());
+			}
+		}
+		Erro.raiseError("Variavel "+n+" nao declarada checarAtributoSuper");
+		// TODO Auto-generated method stub
+		return Symbol.symbol("");
 	}
 
 	@Override

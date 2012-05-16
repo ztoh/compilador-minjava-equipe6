@@ -19,6 +19,7 @@ public class ClassInfo extends Table{
 		metodos = new MethodTable();
 		this.id = id;
 		this.atualmenteMetodo = true;
+		this.extendedClass = Symbol.symbol("");
 		
 	}
 	
@@ -30,6 +31,11 @@ public class ClassInfo extends Table{
 	public void setmetodoAtual( Symbol x)
 	{
 		this.metodoAtual = x;
+	}
+	
+	public Symbol getextendendClass()
+	{
+		return this.extendedClass;
 	}
 	
 	public Symbol getmetodoAtual()

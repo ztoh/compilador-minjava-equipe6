@@ -24,4 +24,9 @@ public class IntegerLiteral extends Exp {
 		// TODO Auto-generated method stub
 		
   }
+  
+  public String toString()
+  {
+	  return "Integer";
+  }
 }
