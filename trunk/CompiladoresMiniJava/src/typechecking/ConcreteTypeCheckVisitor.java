@@ -130,7 +130,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 			n.sl.elementAt(i).accept(this);
 		}
 		// TODO Auto-generated method stub
-		
+
 		if(!k.retorno.equals(n.e.accept(this)))
 		{
 			Erro.raiseError("Tipo de retorno é incompatível");
@@ -442,10 +442,14 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 							}
 						}
 					}
-					return j.retorno;
+					
 				}
+				return j.retorno;
 			}
+			Erro.raiseError("Metodo nao existe");
+			return Symbol.symbol("");
 		}
+		Erro.raiseError("Classe nao existe");
 		return Symbol.symbol("");
 	}
 
@@ -474,7 +478,7 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 				return j;
 			}
 			k = (ClassInfo)contexto.get(k.extendedClass);
-		}while(!k.extendedClass.toString().equals(""));
+		}while(k != null);
 		// TODO Auto-generated method stub
 		return j;
 	}
