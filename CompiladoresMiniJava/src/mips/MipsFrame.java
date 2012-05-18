@@ -8,7 +8,7 @@ import symbol.Symbol;
 import temp.Temp;
 import temp.Label;
 import frame.Frame;
-import frame.Acess;
+import frame.Access;
 import java.util.Arrays;
 
 public class MipsFrame extends Frame {
@@ -61,41 +61,42 @@ public class MipsFrame extends Frame {
 
     private static HashMap<Symbol,Integer> functions
 	= new HashMap<Symbol,Integer>();
+    
     private MipsFrame(Symbol n, List<Boolean> f) {
-	Integer count = functions.get(n);
-	if (count == null) {
-	    count = new Integer(0);
-	    name = new Label(n);
-	} else {
-	    count = new Integer(count.intValue() + 1);
-	    name = new Label(n + "." + count);
-	}
-	functions.put(n, count);
-        actuals = new LinkedList<Access>();
-	formals = new LinkedList<Access>();
-	int offset = 0;
-        Iterator<Boolean> escapes = f.iterator();
-	formals.add(allocLocal(escapes.next().booleanValue()));
-	actuals.add(new InReg(V0));
-	for (int i = 0; i < argRegs.length; ++i) {
-	    if (!escapes.hasNext())
-		break;
-	    offset += wordSize;
-	    actuals.add(new InReg(argRegs[i]));
-	    if (escapes.next().booleanValue())
-		formals.add(new InFrame(offset));
-	    else
-		formals.add(new InReg(new Temp()));
-	}
-	while (escapes.hasNext()) {
-	    offset += wordSize;
-            Access actual = new InFrame(offset);
-	    actuals.add(actual);
-	    if (escapes.next().booleanValue())
-		formals.add(actual);
-	    else
-		formals.add(new InReg(new Temp()));
-	}
+		Integer count = functions.get(n);
+		if (count == null) {
+		    count = new Integer(0);
+		    name = new Label(n);
+		} else {
+		    count = new Integer(count.intValue() + 1);
+		    name = new Label(n + "." + count);
+		}
+		functions.put(n, count);
+	        actuals = new LinkedList<Access>();
+		formals = new LinkedList<Access>();
+		int offset = 0;
+	        Iterator<Boolean> escapes = f.iterator();
+		formals.add(allocLocal(escapes.next().booleanValue()));
+		actuals.add(new InReg(V0));
+		for (int i = 0; i < argRegs.length; ++i) {
+		    if (!escapes.hasNext())
+			break;
+		    offset += wordSize;
+		    actuals.add(new InReg(argRegs[i]));
+		    if (escapes.next().booleanValue())
+			formals.add(new InFrame(offset));
+		    else
+			formals.add(new InReg(new Temp()));
+		}
+		while (escapes.hasNext()) {
+		    offset += wordSize;
+	        Access actual = new InFrame(offset);
+		    actuals.add(actual);
+		    if (escapes.next().booleanValue())
+			formals.add(actual);
+		    else
+			formals.add(new InReg(new Temp()));
+		}
     }
 
     private static final int wordSize = 4;
@@ -103,12 +104,12 @@ public class MipsFrame extends Frame {
 
     private int offset = 0;
     public Access allocLocal(boolean escape) {
-	if (escape) {
-	    Access result = new InFrame(offset);
-	    offset -= wordSize;
-	    return result;
-	} else
-	    return new InReg(new Temp());
+		if (escape) {
+		    Access result = new InFrame(offset);
+		    offset -= wordSize;
+		    return result;
+		} else
+		    return new InReg(new Temp());
     }
 
     static final Temp ZERO = new Temp(); // zero reg
@@ -161,51 +162,51 @@ public class MipsFrame extends Frame {
     public Temp RV() { return V0; }
 
     private static HashMap<String,Label> labels = new HashMap<String,Label>();
-    public Tree.Exp externalCall(String s, List<Tree.Exp> args) {
-	String func = s.intern();
-	Label l = labels.get(func);
-	if (l == null) {
-	    l = new Label("_" + func);
-	    labels.put(func, l);
-	}
-	args.add(0, new Tree.CONST(0));
-	return new Tree.CALL(new Tree.NAME(l), args);
+    public tree.Exp externalCall(String s, List<tree.Exp> args) {
+		String func = s.intern();
+		Label l = labels.get(func);
+		if (l == null) {
+		    l = new Label("_" + func);
+		    labels.put(func, l);
+		}
+		args.add(0, new tree.CONST(0));
+		return new tree.CALL(new tree.NAME(l), args);
     }
 
     public String string(Label lab, String string) {
-	int length = string.length();
-	String lit = "";
-	for (int i = 0; i < length; i++) {
-	    char c = string.charAt(i);
-	    switch(c) {
-	    case '\b': lit += "\\b"; break;
-	    case '\t': lit += "\\t"; break;
-	    case '\n': lit += "\\n"; break;
-	    case '\f': lit += "\\f"; break;
-	    case '\r': lit += "\\r"; break;
-	    case '\"': lit += "\\\""; break;
-	    case '\\': lit += "\\\\"; break;
-	    default:
-		if (c < ' ' || c > '~') {
-		    int v = (int)c;
-		    lit += "\\" + ((v>>6)&7) + ((v>>3)&7) + (v&7);
-		} else
-		    lit += c;
-		break;
-	    }
-	}
-	return "\t.data\n\t.word " + length + "\n" + lab.toString()
-	    + ":\t.asciiz\t\"" + lit + "\"";
+		int length = string.length();
+		String lit = "";
+		for (int i = 0; i < length; i++) {
+		    char c = string.charAt(i);
+		    switch(c) {
+			    case '\b': lit += "\\b"; break;
+			    case '\t': lit += "\\t"; break;
+			    case '\n': lit += "\\n"; break;
+			    case '\f': lit += "\\f"; break;
+			    case '\r': lit += "\\r"; break;
+			    case '\"': lit += "\\\""; break;
+			    case '\\': lit += "\\\\"; break;
+			    default:
+				if (c < ' ' || c > '~') {
+				    int v = (int)c;
+				    lit += "\\" + ((v>>6)&7) + ((v>>3)&7) + (v&7);
+			} else
+			    lit += c;
+			break;
+		    }
+		}
+		return "\t.data\n\t.word " + length + "\n" + lab.toString()
+				+ ":\t.asciiz\t\"" + lit + "\"";
     }
     
     private static final Label badPtr = new Label("BADPTR");
     public Label badPtr() {
-	return badPtr;
+    	return badPtr;
     }
 
     private static final Label badSub = new Label("BADSUB");
     public Label badSub() {
-	return badSub;
+    	return badSub;
     }
 
     private static final
@@ -245,172 +246,166 @@ public class MipsFrame extends Frame {
 	tempMap.put(RA,   "$ra");
     }
     public String tempMap(Temp temp) {
-	return tempMap.get(temp);
+    	return tempMap.get(temp);
     }
 
     int maxArgOffset = 0;
 
-    public List<Assem.Instr> codegen(List<Tree.Stm> stms) {
-	List<Assem.Instr> insns = new java.util.LinkedList<Assem.Instr>();
-	Codegen cg = new Codegen(this, insns.listIterator());
-	for (java.util.Iterator<Tree.Stm> s = stms.iterator(); s.hasNext(); )
-	    s.next().accept(cg);
-	return insns;
+    public List<Assem.Instr> codegen(List<tree.Stm> stms) {
+		List<Assem.Instr> insns = new java.util.LinkedList<Assem.Instr>();
+		Codegen cg = new Codegen(this, insns.listIterator());
+		for (java.util.Iterator<tree.Stm> s = stms.iterator(); s.hasNext(); )
+		    s.next().accept(cg);
+		return insns;
     }
 
     private static <R> void addAll(java.util.Collection<R> c, R[] a) {
-	for (int i = 0; i < a.length; i++)
-	    c.add(a[i]);
+    	for (int i = 0; i < a.length; i++)
+    		c.add(a[i]);
     }
 
     // Registers live on return
     private static Temp[] returnSink = {};
     {
-	LinkedList<Temp> l = new LinkedList<Temp>();
-	l.add(V0);
-	addAll(l, specialRegs);
-	addAll(l, calleeSaves);
-	returnSink = l.toArray(returnSink);
+		LinkedList<Temp> l = new LinkedList<Temp>();
+		l.add(V0);
+		addAll(l, specialRegs);
+		addAll(l, calleeSaves);
+		returnSink = l.toArray(returnSink);
     }
 
     // Registers defined by a call
     static Temp[] calldefs = {};
     {
-	LinkedList<Temp> l = new LinkedList<Temp>();
-	l.add(RA);
-	addAll(l, argRegs);
-	addAll(l, callerSaves);
-	calldefs = l.toArray(calldefs);
+		LinkedList<Temp> l = new LinkedList<Temp>();
+		l.add(RA);
+		addAll(l, argRegs);
+		addAll(l, callerSaves);
+		calldefs = l.toArray(calldefs);
     }
 
-    private static Tree.Stm SEQ(Tree.Stm left, Tree.Stm right) {
-	if (left == null)
-	    return right;
-	if (right == null)
-	    return left;
-	return new Tree.SEQ(left, right);
+    private static tree.Stm SEQ(tree.Stm left, tree.Stm right) {
+		if (left == null)
+		    return right;
+		if (right == null)
+		    return left;
+		return new tree.SEQ(left, right);
     }
-    private static Tree.MOVE MOVE(Tree.Exp d, Tree.Exp s) {
-	return new Tree.MOVE(d, s);
+    private static tree.MOVE MOVE(tree.Exp d, tree.Exp s) {
+    	return new tree.MOVE(d, s);
     }
-    private static Tree.TEMP TEMP(Temp t) {
-	return new Tree.TEMP(t);
+    private static tree.TEMP TEMP(Temp t) {
+    	return new tree.TEMP(t);
     }
 
     private void
 	assignFormals(Iterator<Access> formals,
 		      Iterator<Access> actuals,
-		      List<Tree.Stm> body)
+		      List<tree.Stm> body)
     {
-	if (!formals.hasNext() || !actuals.hasNext())
-	    return;
-	Access formal = formals.next();
-	Access actual = actuals.next();
-	assignFormals(formals, actuals, body);
-	body.add(0, MOVE(formal.exp(TEMP(FP)), actual.exp(TEMP(FP))));
+		if (!formals.hasNext() || !actuals.hasNext())
+		    return;
+		Access formal = formals.next();
+		Access actual = actuals.next();
+		assignFormals(formals, actuals, body);
+		body.add(0, MOVE(formal.exp(TEMP(FP)), actual.exp(TEMP(FP))));
     }
 
-    private void assignCallees(int i, List<Tree.Stm> body)
+    private void assignCallees(int i, List<tree.Stm> body)
     {
-	if (i >= calleeSaves.length)
-	    return;
-	Access a = allocLocal(!spilling);
-	assignCallees(i+1, body);
-	body.add(0, MOVE(a.exp(TEMP(FP)), TEMP(calleeSaves[i])));
-	body.add(MOVE(TEMP(calleeSaves[i]), a.exp(TEMP(FP))));
+		if (i >= calleeSaves.length)
+		    return;
+		Access a = allocLocal(!spilling);
+		assignCallees(i+1, body);
+		body.add(0, MOVE(a.exp(TEMP(FP)), TEMP(calleeSaves[i])));
+		body.add(MOVE(TEMP(calleeSaves[i]), a.exp(TEMP(FP))));
     }
 
     private List<Access> actuals;
-    public void procEntryExit1(List<Tree.Stm> body) {
-	assignFormals(formals.iterator(), actuals.iterator(), body);
-	assignCallees(0, body);
+    public void procEntryExit1(List<tree.Stm> body) {
+		assignFormals(formals.iterator(), actuals.iterator(), body);
+		assignCallees(0, body);
     }
 
     private static Assem.Instr OPER(String a, Temp[] d, Temp[] s) {
-	return new Assem.OPER(a, d, s, null);
+    	return new Assem.OPER(a, d, s, null);
     }
 
     public void procEntryExit2(List<Assem.Instr> body) {
-	body.add(OPER("#\treturn", null, returnSink));
+    	body.add(OPER("#\treturn", null, returnSink));
     }
 
     public void procEntryExit3(List<Assem.Instr> body) {
-	int frameSize = maxArgOffset - offset;
-	ListIterator<Assem.Instr> cursor = body.listIterator();
-	cursor.add(OPER("\t.text", null, null));
-	cursor.add(OPER(name + ":", null, null));
-	cursor.add(OPER(name + "_framesize=" + frameSize, null, null));
-	if (frameSize != 0) {
-	    cursor.add(OPER("\tsubu $sp " + name + "_framesize",
-			    new Temp[]{SP}, new Temp[]{SP}));
-	    body.add(OPER("\taddu $sp " + name + "_framesize",
-			  new Temp[]{SP}, new Temp[]{SP}));
-	}
-	body.add(OPER("\tj $ra", null, new Temp[]{RA}));
+		int frameSize = maxArgOffset - offset;
+		ListIterator<Assem.Instr> cursor = body.listIterator();
+		cursor.add(OPER("\t.text", null, null));
+		cursor.add(OPER(name + ":", null, null));
+		cursor.add(OPER(name + "_framesize=" + frameSize, null, null));
+		if (frameSize != 0) {
+		    cursor.add(OPER("\tsubu $sp " + name + "_framesize",
+				    new Temp[]{SP}, new Temp[]{SP}));
+		    body.add(OPER("\taddu $sp " + name + "_framesize",
+				  new Temp[]{SP}, new Temp[]{SP}));
+		}
+		body.add(OPER("\tj $ra", null, new Temp[]{RA}));
     }
 
     private static Temp[] registers = {};
     {
-	LinkedList<Temp> l = new LinkedList<Temp>();
-	addAll(l, callerSaves);
-	addAll(l, calleeSaves);
-	addAll(l, argRegs);
-	addAll(l, specialRegs);
-	registers = l.toArray(registers);
+		LinkedList<Temp> l = new LinkedList<Temp>();
+		addAll(l, callerSaves);
+		addAll(l, calleeSaves);
+		addAll(l, argRegs);
+		addAll(l, specialRegs);
+		registers = l.toArray(registers);
     }
     public Temp[] registers() {
-	return registers;
+    	return registers;
     }
 
-        private static boolean spilling = true ;
+    private static boolean spilling = true ;
     // set spilling to true when the spill method is implemented
     public void spill(List<Assem.Instr> insns, Temp[] spills) {
-	if (spills != null) {
-	    if (!spilling) {
-		for (int s = 0; s < spills.length; s++)
-		    System.err.println("Need to spill " + spills[s]);
-		throw new Error("Spilling unimplemented");
-	    }
-            else for (int s = 0; s < spills.length; s++) {
-		Tree.Exp exp = allocLocal(true).exp(TEMP(FP));
-		for (ListIterator<Assem.Instr> i = insns.listIterator();
-		     i.hasNext(); ) {
-		    Assem.Instr insn = i.next();
-		    Temp[] use = insn.use;
-		    if (use != null)
-			for (int u = 0; u < use.length; u++) {
-			    if (use[u] == spills[s]) {
-				Temp t = new Temp();
-				t.spillTemp = true;
-				Tree.Stm stm = MOVE(TEMP(t), exp);
-				i.previous();
-				stm.accept(new Codegen(this, i));
-				if (insn != i.next())
-				    throw new Error();
-				insn.replaceUse(spills[s], t);
-				break;
-			    }
-			}
-		    Temp[] def = insn.def;
-		    if (def != null)
-			for (int d = 0; d < def.length; d++) {
-			    if (def[d] == spills[s]) {
-				Temp t = new Temp();
-				t.spillTemp = true;
-				insn.replaceDef(spills[s], t);
-				Tree.Stm stm = MOVE(exp, TEMP(t));
-				stm.accept(new Codegen(this, i));
-				break;
-			    }
-			}
-		}
-	    }
+		if (spills != null) {
+			    if (!spilling) {
+				for (int s = 0; s < spills.length; s++)
+				    System.err.println("Need to spill " + spills[s]);
+				throw new Error("Spilling unimplemented");
+		    }
+	        else for (int s = 0; s < spills.length; s++) {
+					tree.Exp exp = allocLocal(true).exp(TEMP(FP));
+					for (ListIterator<Assem.Instr> i = insns.listIterator();
+					     i.hasNext(); ) {
+					    Assem.Instr insn = i.next();
+					    Temp[] use = insn.use;
+					    if (use != null)
+						for (int u = 0; u < use.length; u++) {
+						    if (use[u] == spills[s]) {
+								Temp t = new Temp();
+								t.spillTemp = true;
+								tree.Stm stm = MOVE(TEMP(t), exp);
+								i.previous();
+								stm.accept(new Codegen(this, i));
+								if (insn != i.next())
+								    throw new Error();
+								insn.replaceUse(spills[s], t);
+								break;
+						    }
+						}
+				    Temp[] def = insn.def;
+				    if (def != null)
+						for (int d = 0; d < def.length; d++) {
+						    if (def[d] == spills[s]) {
+								Temp t = new Temp();
+								t.spillTemp = true;
+								insn.replaceDef(spills[s], t);
+								tree.Stm stm = MOVE(exp, TEMP(t));
+								stm.accept(new Codegen(this, i));
+								break;
+						    }
+						}
+				}
+		    }
         }
     }
 }
-
-
-
-
-
-

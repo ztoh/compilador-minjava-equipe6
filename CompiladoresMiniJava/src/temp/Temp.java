@@ -1,15 +1,11 @@
 package temp;
 
-public class Temp {
-	String s;
-
-	public String toString()
-	{
-		return s;
-	}
-	public Temp()
-	{
-		
-	}
-
+public class Temp  {
+   private static int count;
+   private int num;
+   public String toString() {return "t" + num;}
+   public Temp() { 
+     num=count++;
+   }
 }
+
