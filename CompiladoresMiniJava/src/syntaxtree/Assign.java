@@ -1,4 +1,5 @@
 package syntaxtree;
+import translate.TreeIRVisitor;
 import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -21,6 +22,13 @@ public class Assign extends Statement {
 
 @Override
 public void accept(TypeCheckVisitor v) {
+	v.visit(this);
+	// TODO Auto-generated method stub
+	
+}
+
+@Override
+public void accept(TreeIRVisitor v) {
 	v.visit(this);
 	// TODO Auto-generated method stub
 	

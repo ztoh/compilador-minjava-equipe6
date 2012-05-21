@@ -1,4 +1,5 @@
 package syntaxtree;
+import translate.TreeIRVisitor;
 import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -24,6 +25,13 @@ public class While extends Statement {
 	  v.visit(this);
 	// TODO Auto-generated method stub
 	
+  }
+  
+  @Override
+  public translate.Exp accept(TreeIRVisitor v) {
+  	return v.visit(this);
+  	// TODO Auto-generated method stub
+  	
   }
 }
 

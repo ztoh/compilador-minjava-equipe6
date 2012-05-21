@@ -2,6 +2,7 @@ package syntaxtree;
 //import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.ClassInfo;
+import translate.TreeIRVisitor;
 import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -42,5 +43,10 @@ public class ClassDeclSimple extends ClassDecl {
 	  v.visit(this);
 	  // TODO Auto-generated method stub
 	
+  }
+  @Override
+  public void accept(TreeIRVisitor v) {
+	// TODO Auto-generated method stub
+	v.visit(this);
   }
 }
