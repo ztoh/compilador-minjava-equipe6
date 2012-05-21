@@ -1,4 +1,5 @@
 package syntaxtree;
+import translate.TreeIRVisitor;
 import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -24,5 +25,11 @@ public class Block extends Statement {
 	// TODO Auto-generated method stub
 	
 }
+  @Override
+  public void accept(TreeIRVisitor v) {
+  	v.visit(this);
+  	// TODO Auto-generated method stub
+  	
+  }
 }
 

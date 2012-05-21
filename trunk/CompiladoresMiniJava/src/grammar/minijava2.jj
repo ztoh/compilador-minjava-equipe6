@@ -17,11 +17,15 @@ import visitor.*;
 import symboltablevisitor.*;
 import table.*;
 import typechecking.*;
+
+/*Tente mover o mundo - o primeiro passo será mover a si mesmo.
+  Platão
+*/
+
 public class eg1
 {
   public static void main(String[] args) throws ParseException
   {
-    //System.out.println("TESTE");
 	eg1 Analyzer  = new eg1(System.in);
 	Program x = Analyzer.Start();
 	//Table k = x.accept(new ImperativeSymbolTableVisitor());
