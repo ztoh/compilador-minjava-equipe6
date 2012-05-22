@@ -2,6 +2,7 @@ package mips;
 
 import temp.Temp;
 import tree.Exp;
+import tree.TEMP;
 import frame.Access;
 
 public class InReg extends Access{
@@ -12,16 +13,12 @@ public class InReg extends Access{
 		this.temp = temp;
 	}
 
-	@Override
-	public void exp(Temp temp) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	@Override
 	public Exp exp(Exp framePtr) {
 		// TODO Auto-generated method stub
-		return null;
+		return new TEMP(temp);
 	}
 	
 }
