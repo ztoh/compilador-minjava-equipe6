@@ -2,6 +2,7 @@ package syntaxtree;
 import symbol.Symbol;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.VarInfo;
+import translate.TreeIRVisitor;
 //import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -31,4 +32,10 @@ public class VarDecl {
   {
 	  return this.i.toString();
   }
+  
+  public translate.Exp accept(TreeIRVisitor v) {
+		return v.visit(this);
+		// TODO Auto-generated method stub
+		
+	}
 }
