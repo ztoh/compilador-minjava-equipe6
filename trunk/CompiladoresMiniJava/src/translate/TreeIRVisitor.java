@@ -176,6 +176,15 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(MethodDecl n) {
+		
+		Stm corpo = new EXP( new CONST(0));
+		ArrayList j = new ArrayList<Boolean>();
+		for (int i = 0; i < n.fl.size(); i++) {
+			j.add(true);
+		}
+		for (int i = 0; i < n.sl.size(); i++) {
+			corpo = new SEQ(new EXP(n.sl.elementAt(i).accept(this).unEx()),corpo);
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}
