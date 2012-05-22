@@ -20,5 +20,9 @@ public class InReg extends Access{
 		// TODO Auto-generated method stub
 		return new TEMP(temp);
 	}
+	public String toString()
+	{
+		return temp.toString();
+	}
 	
 }

@@ -1,11 +1,13 @@
 package table;
 
+import frame.Access;
 import symbol.*;
 import syntaxtree.*;
 
 public class VarInfo {
 	private Type type;
 	private Symbol symbol;
+	public Access access;
 	
 	public VarInfo(Type type,Symbol symbol)
 	{
