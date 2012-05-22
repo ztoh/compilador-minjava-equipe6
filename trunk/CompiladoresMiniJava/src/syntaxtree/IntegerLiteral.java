@@ -1,5 +1,6 @@
 package syntaxtree;
 import symbol.Symbol;
+import translate.VisitorIR;
 import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -29,4 +30,9 @@ public class IntegerLiteral extends Exp {
   {
 	  return "Integer";
   }
+  
+  public translate.Exp accept(VisitorIR v) {
+		// TODO Auto-generated method stub
+		return v.visit(this);
+	}
 }

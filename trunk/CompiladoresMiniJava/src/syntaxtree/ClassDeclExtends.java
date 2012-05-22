@@ -45,8 +45,9 @@ public class ClassDeclExtends extends ClassDecl {
 }
 
   @Override
-  public void accept(TreeIRVisitor v) {
-	// TODO Auto-generated method stub
-	v.visit(this);
-  }
+  public translate.Exp accept(TreeIRVisitor v) {
+		return v.visit(this);
+		// TODO Auto-generated method stub
+		
+	}
 }

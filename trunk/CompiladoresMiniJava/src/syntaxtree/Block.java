@@ -26,10 +26,10 @@ public class Block extends Statement {
 	
 }
   @Override
-  public void accept(TreeIRVisitor v) {
-  	v.visit(this);
-  	// TODO Auto-generated method stub
-  	
-  }
+  public translate.Exp accept(TreeIRVisitor v) {
+		return v.visit(this);
+		// TODO Auto-generated method stub
+		
+	}
 }
 

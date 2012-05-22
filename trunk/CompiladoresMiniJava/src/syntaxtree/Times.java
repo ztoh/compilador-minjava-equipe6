@@ -1,5 +1,7 @@
 package syntaxtree;
 import symbol.Symbol;
+import translate.TreeIRVisitor;
+import translate.VisitorIR;
 import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -23,5 +25,11 @@ public class Times extends Exp {
 		return v.visit(this);
 		// TODO Auto-generated method stub
 		
+}
+
+@Override
+public translate.Exp accept(VisitorIR v) {
+	// TODO Auto-generated method stub
+	return v.visit(this);
 }
 }

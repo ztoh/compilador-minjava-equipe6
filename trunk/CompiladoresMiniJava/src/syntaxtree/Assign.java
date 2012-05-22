@@ -27,9 +27,8 @@ public void accept(TypeCheckVisitor v) {
 	
 }
 
-@Override
-public void accept(TreeIRVisitor v) {
-	v.visit(this);
+public translate.Exp accept(TreeIRVisitor v) {
+	return v.visit(this);
 	// TODO Auto-generated method stub
 	
 }

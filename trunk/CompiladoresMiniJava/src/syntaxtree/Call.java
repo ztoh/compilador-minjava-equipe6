@@ -1,5 +1,6 @@
 package syntaxtree;
 import symbol.Symbol;
+import translate.VisitorIR;
 import typechecking.TypeCheckVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
@@ -26,4 +27,9 @@ public class Call extends Exp {
 		// TODO Auto-generated method stub
 		
   }
+  
+  public translate.Exp accept(VisitorIR v) {
+		// TODO Auto-generated method stub
+		return v.visit(this);
+	}
 }

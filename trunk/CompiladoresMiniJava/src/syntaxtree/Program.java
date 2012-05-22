@@ -1,6 +1,7 @@
 package syntaxtree;
 import symboltablevisitor.ImperativeSymbolTableVisitor;
 import table.Table;
+import translate.TreeIRVisitor;
 import visitor.Visitor;
 import visitor.TypeVisitor;
 
@@ -24,4 +25,10 @@ public class Program {
   {
 	  return v.visit(this);
   }
+  
+  public translate.Exp accept(TreeIRVisitor v) {
+		return v.visit(this);
+		// TODO Auto-generated method stub
+		
+	}
 }
