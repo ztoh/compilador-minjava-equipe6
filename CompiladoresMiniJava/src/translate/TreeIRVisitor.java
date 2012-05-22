@@ -183,7 +183,7 @@ public class TreeIRVisitor implements VisitorIR {
 	@Override
 	public Exp visit(Formal n) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Exp( new TEMP ( frameAtual.FP()));//pegarEndereco(Symbol.symboln.i.toString());
 	}
 
 	
