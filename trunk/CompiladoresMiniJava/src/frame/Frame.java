@@ -11,7 +11,7 @@ public abstract class Frame {
 	public Label name;
 	public LinkedList<Access> formals;
 	abstract public Frame newFrame(Symbol name,List <Boolean> formals);
-	abstract public tree.Stm procEntryExit1(List<tree.Stm> body);
+	//abstract public tree.Stm procEntryExit1(List<tree.Stm> body);
     
     //public abstract void procEntryExit2(java.util.List<Instr> body);
     

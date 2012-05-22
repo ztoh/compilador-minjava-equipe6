@@ -1,7 +1,9 @@
 package mips;
 
-import temp.Temp;
+import tree.BINOP;
+import tree.CONST;
 import tree.Exp;
+import tree.MEM;
 import frame.Access;
 
 public class InFrame extends Access{
@@ -13,14 +15,13 @@ public class InFrame extends Access{
 	}
 
 	@Override
-	public void exp(Temp temp) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public Exp exp(Exp framePtr) {
 		// TODO Auto-generated method stub
-		return null;
+		return new MEM(new BINOP(BINOP.PLUS,new CONST(this.offset),framePtr));
+	}
+	
+	public String toString()
+	{
+		return new Integer(this.offset).toString();
 	}
 }

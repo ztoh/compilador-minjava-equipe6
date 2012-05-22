@@ -1,5 +1,32 @@
+/*
+Carlos Drummond de Andrade
+
+ 
+No meio do caminho
+
+
+No meio do caminho tinha uma pedra
+tinha uma pedra no meio do caminho
+tinha uma pedra
+no meio do caminho tinha uma pedra.
+
+
+Nunca me esquecerei desse acontecimento
+na vida de minhas retinas tão fatigadas.
+ 
+Nunca me esquecerei que no meio do caminho
+tinha uma pedra
+ 
+Tinha uma pedra no meio do caminho
+no meio do caminho tinha uma pedra.
+*/
+
+
+
+
 package translate;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import frame.Frame;
@@ -52,10 +79,12 @@ import tree.Stm;
 import tree.ESEQ;
 import tree.SEQ;
 import tree.CJUMP;
+import tree.JUMP;
 import tree.BINOP;
 import tree.CALL;
 import tree.NAME;
 import temp.Label;
+import util.Conversor;
 
 public class TreeIRVisitor implements VisitorIR {
 
@@ -74,10 +103,17 @@ public class TreeIRVisitor implements VisitorIR {
 		
 	}
 	
+	public tree.Exp pegarEndereco()
+	{
+		return null;
+	}
+	
 	@Override
 	public Exp visit(Program n) {
+		
 		n.m.accept(this);
 		for (int i = 0; i < n.cl.size(); i++) {
+			this.classe = (ClassInfo)this.classes.get(Symbol.symbol(n.cl.elementAt(i).toString()));
 			n.cl.elementAt(i).accept(this);
 			
 		}
@@ -87,7 +123,12 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(MainClass n) {
+		this.classe = (ClassInfo)classes.get(Symbol.symbol(n.i1.toString()));
 		Stm body =new EXP(n.s.accept(this).unEx());
+		frameAtual = frameAtual.newFrame(Symbol.symbol("principal"), new ArrayList<Boolean>());
+		//frames.push(frameAtual);
+		//frames.pop();
+		//frameAtual = frameAtual.newFrame(className, new ArrayList<Boolean>());
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -128,29 +169,7 @@ public class TreeIRVisitor implements VisitorIR {
 		return null;
 	}
 
-	@Override
-	public Exp visit(IntArrayType n) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Exp visit(BooleanType n) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Exp visit(IntegerType n) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Exp visit(IdentifierType n) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 	@Override
 	public Exp visit(Block n) {
@@ -170,11 +189,6 @@ public class TreeIRVisitor implements VisitorIR {
 		Exp label1 = n.s1.accept(this);
 		Exp label2 = n.s2.accept(this);
 		tree.Exp Cx = new ESEQ(new SEQ(new CJUMP(CJUMP.GT,cond,new CONST(0),iff,elsee),new SEQ(new SEQ(new LABEL(iff),new EXP(label1.unEx())),new SEQ(new LABEL(elsee),new EXP(label2.unEx())))),new CONST(0));
-												
-												/*new ESEQ(new SEQ(new CJUMP(CJUMP.GT,cond,new CONST(0),iff,elsee),
-														new SEQ(new LABEL(iff),
-																new LABEL(elsee)),new CONST(0))));*/
-
 
 		// TODO Auto-generated method stub
 		return new Exp(Cx);
@@ -182,14 +196,28 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(While n) {
+		Label teste = new Label();
+		Label body = new Label();
+		Label done = new Label();
+		Exp cond = n.e.accept(this);
+		Exp stm = n.s.accept(this);
+		
 		// TODO Auto-generated method stub
-		return null;
+		return new Exp (new ESEQ(
+                new SEQ(new LABEL(teste),
+                        new SEQ(
+                                new CJUMP(CJUMP.GT,cond.unEx(),new CONST(0),body,done),
+                                new SEQ(new LABEL(body), new SEQ(new EXP(stm.unEx()),new JUMP(teste)))
+                        )
+        ), new CONST(0)));
 	}
 
 	@Override
 	public Exp visit(Print n) {
+		Exp expressao = n.e.accept(this);
+		tree.ExpList parametros= new tree.ExpList(expressao.unEx(),null); 
 		// TODO Auto-generated method stub
-		return null;
+		return new Exp( frameAtual.externalCall("print", Conversor.converterExpList(parametros)));
 	}
 
 	@Override
@@ -265,7 +293,7 @@ public class TreeIRVisitor implements VisitorIR {
 	@Override
 	public Exp visit(Call n) {
 		ClassInfo j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
-		MethodInfo x = (MethodInfo)j.getMetodo(Symbol.symbol(n.i.toString()));
+		//MethodInfo x = (MethodInfo)j.getMetodo(Symbol.symbol(n.i.toString()));
 		tree.ExpList lista = null;
 		for (int i = n.el.size() -1; i >= 0 ; i--) {
 			lista = new ExpList(n.el.elementAt(i).accept(this).unEx(),lista);
@@ -284,13 +312,13 @@ public class TreeIRVisitor implements VisitorIR {
 	@Override
 	public Exp visit(True n) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Exp(new CONST(1));
 	}
 
 	@Override
 	public Exp visit(False n) {
 		// TODO Auto-generated method stub
-		return null;
+		return new Exp(new CONST(0));
 	}
 
 	@Override
@@ -319,8 +347,10 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(Not n) {
+		Exp e = n.e.accept(this);
+		
 		// TODO Auto-generated method stub
-		return null;
+		return new Exp(new BINOP(BINOP.MINUS,new CONST(1),e.unEx()));
 	}
 
 	@Override
@@ -328,5 +358,30 @@ public class TreeIRVisitor implements VisitorIR {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	@Override
+	public Exp visit(IntArrayType n) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Exp visit(BooleanType n) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Exp visit(IntegerType n) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Exp visit(IdentifierType n) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
+	

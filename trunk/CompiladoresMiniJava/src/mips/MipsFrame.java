@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import symbol.Symbol;
 import temp.Temp;
 import temp.Label;
+import util.Conversor;
 import frame.Frame;
 import frame.Access;
 import java.util.Arrays;
@@ -170,7 +171,7 @@ public class MipsFrame extends Frame {
 		    labels.put(func, l);
 		}
 		args.add(0, new tree.CONST(0));
-		return new tree.CALL(new tree.NAME(l), args);
+		return new tree.CALL(new tree.NAME(l), Conversor.converterList(args));
     }
 
     public String string(Label lab, String string) {
