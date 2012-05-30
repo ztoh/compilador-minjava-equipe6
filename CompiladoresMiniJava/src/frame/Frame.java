@@ -3,6 +3,8 @@ package frame;
 import java.util.LinkedList;
 import java.util.List;
 
+import assem.Instr;
+
 import symbol.Symbol;
 import temp.Label;
 
@@ -12,11 +14,9 @@ public abstract class Frame {
 	public int wordSize;
 	public LinkedList<Access> formals;
 	abstract public Frame newFrame(Symbol name,List <Boolean> formals);
-	//abstract public tree.Stm procEntryExit1(List<tree.Stm> body);
-    
-    //public abstract void procEntryExit2(java.util.List<Instr> body);
-    
-    //public abstract void procEntryExit3(java.util.List<Instr> body);
+	abstract public void procEntryExit1(List<tree.Stm> body);
+    public abstract void procEntryExit2(java.util.List<Instr> body);
+    public abstract void procEntryExit3(java.util.List<Instr> body);
 	abstract public temp.Temp FP();
 	abstract public int wordSize();
 	abstract public tree.Exp externalCall(String func, List<tree.Exp> args);
