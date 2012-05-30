@@ -329,7 +329,7 @@ public class MipsFrame extends Frame {
     }
 
     private static assem.Instr OPER(String a, Temp[] d, Temp[] s) {
-    	return new assem.OPER(a, d, s, null);
+    	return new assem.OPER(a, Conversor.converterVetorTemp(d), Conversor.converterVetorTemp(s), null);
     }
 
     public void procEntryExit2(List<assem.Instr> body) {

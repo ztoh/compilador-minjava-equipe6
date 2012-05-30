@@ -28,11 +28,7 @@ package translate;
 
 import java.util.ArrayList;
 import java.util.Stack;
-
-import mips.InReg;
-
 import frame.Frame;
-
 import symbol.Symbol;
 import syntaxtree.And;
 import syntaxtree.ArrayAssign;
@@ -97,6 +93,7 @@ public class TreeIRVisitor implements VisitorIR {
 	ClassTable classes;
 	MethodInfo metodo;
 	ClassInfo classe;
+	ArrayList <Frag> fragmentos;
 	
 	public TreeIRVisitor(ClassTable k, Frame frameAtual)
 	{
@@ -104,24 +101,19 @@ public class TreeIRVisitor implements VisitorIR {
 		this.frameAtual = frameAtual;
 		frames = new Stack<Frame>();
 		frames.push(frameAtual);
-		//pegarEndereco(Symbol.symbol("num_aux"));
+		fragmentos = new ArrayList<Frag>();
 		
 	}
 	
 	public translate.Exp pegarEndereco(Symbol var)
 	{
 		VarInfo vD;
-        //ClassTable cT = (ClassTable) symbolT.get(className);
-        //MethodInfo mBT = (MethodInfo) classe.get(methodName);
-        
+
         if((vD=(VarInfo) metodo.paramEntrada.get(var))!=null);
         else if((vD=(VarInfo) metodo.listaDeVariaveis.get(var))!=null);
         else vD=(VarInfo) classe.get(var);
-        //vD.access = new InReg(new temp.Temp(frameAtual.FP()));
-        tree.Exp move = vD.access.exp(new TEMP(frameAtual.FP()));
         
-        //return new Exp(move);
-        return new Exp(move);
+        return new Exp(vD.access.exp(new TEMP(frameAtual.FP())));
 	}
 	
 	@Override
@@ -133,24 +125,36 @@ public class TreeIRVisitor implements VisitorIR {
 			n.cl.elementAt(i).accept(this);
 			
 		}
+		tree.Print h = new tree.Print(System.out);
+		
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Exp visit(MainClass n) {
+		
 		this.classe = (ClassInfo)classes.get(Symbol.symbol(n.i1.toString()));
-		Stm body =new EXP(n.s.accept(this).unEx());
 		frameAtual = frameAtual.newFrame(Symbol.symbol("principal"), new ArrayList<Boolean>());
-		//frames.push(frameAtual);
-		//frames.pop();
-		//frameAtual = frameAtual.newFrame(className, new ArrayList<Boolean>());
+		frames.push(frameAtual);
+		Stm body =new EXP(n.s.accept(this).unEx());
+		ArrayList<Stm> lista = new ArrayList<Stm>();
+		lista.add(body);
+		frameAtual.procEntryExit1(lista);
+		fragmentos.add(new Frag(body,frameAtual));
+		frames.pop();
+		
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Exp visit(ClassDeclSimple n) {
+		this.classe = (ClassInfo)classes.get(Symbol.symbol(n.i.toString()));
+		for (int i = 0; i < n.vl.size(); i++) {
+			n.vl.elementAt(i).accept(this);	
+		}
+		
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
@@ -160,6 +164,10 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(ClassDeclExtends n) {
+		this.classe = (ClassInfo)classes.get(Symbol.symbol(n.i.toString()));
+		for (int i = 0; i < n.vl.size(); i++) {
+			n.vl.elementAt(i).accept(this);	
+		}
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
@@ -168,8 +176,14 @@ public class TreeIRVisitor implements VisitorIR {
 	}
 
 	@Override
-	public Exp visit(VarDecl n) {
-		
+	public Exp visit(VarDecl n) 
+	{
+		VarInfo vD;
+
+        if((vD=(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString())))!=null);
+        else if((vD=(VarInfo) metodo.listaDeVariaveis.get(Symbol.symbol(n.i.toString())))!=null);
+        else vD=(VarInfo) classe.get(Symbol.symbol(n.i.toString()));
+		vD.access = frameAtual.allocLocal(false);
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -177,14 +191,28 @@ public class TreeIRVisitor implements VisitorIR {
 	@Override
 	public Exp visit(MethodDecl n) {
 		
+		
 		Stm corpo = new EXP( new CONST(0));
-		ArrayList j = new ArrayList<Boolean>();
-		for (int i = 0; i < n.fl.size(); i++) {
-			j.add(true);
+		ArrayList<Boolean> j = new ArrayList<Boolean>();
+		for (int i = 0; i <= n.fl.size(); i++) {
+			j.add(false);
 		}
+		frameAtual = frameAtual.newFrame(Symbol.symbol(classe.toString()+"$"+ metodo.toString()), (java.util.List<Boolean>)j);
+		frames.push(frameAtual);
+		
+		for (int i = 0; i < n.vl.size(); i++) {
+			n.vl.elementAt(i).accept(this);	
+		}
+		
 		for (int i = 0; i < n.sl.size(); i++) {
-			corpo = new SEQ(new EXP(n.sl.elementAt(i).accept(this).unEx()),corpo);
+			corpo = new SEQ(corpo,new EXP(n.sl.elementAt(i).accept(this).unEx()));
 		}
+		ArrayList<Stm> l = new ArrayList<Stm>();
+		l.add(corpo);
+		frameAtual.procEntryExit1(l);
+		fragmentos.add(new Frag(corpo,frameAtual));
+		
+		frames.pop();
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -192,7 +220,8 @@ public class TreeIRVisitor implements VisitorIR {
 	@Override
 	public Exp visit(Formal n) {
 		// TODO Auto-generated method stub
-		return new Exp( new TEMP ( frameAtual.FP()));//pegarEndereco(Symbol.symboln.i.toString());
+		//return new Exp( new TEMP ( frameAtual.FP()));//pegarEndereco(Symbol.symboln.i.toString());
+		return null;
 	}
 
 	
@@ -314,8 +343,9 @@ public class TreeIRVisitor implements VisitorIR {
 	public Exp visit(ArrayLookup n) {
 		Exp e1 = n.e1.accept(this);
 		Exp e2 = n.e2.accept(this);
+		//Adicionando 1 porque a primeira posicao é para o tamanho do vetor
 		// TODO Auto-generated method stub
-		return new Exp(new BINOP(BINOP.PLUS,e1.unEx()  ,new BINOP(BINOP.MUL,e2.unEx() ,new CONST(frameAtual.wordSize())    )     )       );
+		return new Exp(new BINOP(BINOP.PLUS,e1.unEx()  ,new BINOP(BINOP.MUL,new BINOP(BINOP.PLUS,new CONST(1) ,e2.unEx()) ,new CONST(frameAtual.wordSize())    )     )       );
 	}
 
 	@Override
@@ -433,7 +463,7 @@ public class TreeIRVisitor implements VisitorIR {
 	public Exp visit(IdentifierType n) {
 		// TODO Auto-generated method stub
 		return null;
-	}
+	}	
 
 }
 	
