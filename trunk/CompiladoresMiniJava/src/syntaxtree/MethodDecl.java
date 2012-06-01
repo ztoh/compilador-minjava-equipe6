@@ -43,9 +43,9 @@ public class MethodDecl {
 	
   }
 
-public translate.Exp accept(TreeIRVisitor v) {
-	return v.visit(this);
+  public translate.Exp accept(TreeIRVisitor v) {
+	  return v.visit(this);
 	// TODO Auto-generated method stub
 	
-}
+  }
 }

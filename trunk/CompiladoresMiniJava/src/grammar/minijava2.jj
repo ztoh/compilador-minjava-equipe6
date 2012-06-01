@@ -17,6 +17,8 @@ import visitor.*;
 import symboltablevisitor.*;
 import table.*;
 import typechecking.*;
+import translate.TreeIRVisitor;
+import mips.MipsFrame;
 
 /*Tente mover o mundo - o primeiro passo será mover a si mesmo.
   Platão
@@ -28,10 +30,12 @@ public class eg1
   {
 	eg1 Analyzer  = new eg1(System.in);
 	Program x = Analyzer.Start();
-	//Table k = x.accept(new ImperativeSymbolTableVisitor());
+	ClassTable k = (ClassTable)x.accept(new ImperativeSymbolTableVisitor());
 	//System.out.println(k.toString());
-	ConcreteTypeCheckVisitor j = new ConcreteTypeCheckVisitor();
+	ConcreteTypeCheckVisitor j = new ConcreteTypeCheckVisitor(k);
 	j.visit(x);
+	TreeIRVisitor m = new TreeIRVisitor(k,new MipsFrame());
+	m.visit(x);
 	
   }
 }
@@ -44,7 +48,6 @@ SPECIAL_TOKEN:
 {
   
  < COMMENT: "//" (< ALL >)* (("\r") | ("\n")) >
-| < COMMENT1: "/*" (< ALL >)*  "*/" >
 }
 
 TOKEN :

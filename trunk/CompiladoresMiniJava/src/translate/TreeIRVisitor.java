@@ -22,11 +22,13 @@ no meio do caminho tinha uma pedra.
 */
 
 
-
+//Ultima coisa a ser feita é ajeitar o Call para checar por atributos da super
+//e pegar a classe que tem o metodo do call recursivo
 
 package translate;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Stack;
 import frame.Frame;
 import symbol.Symbol;
@@ -111,8 +113,22 @@ public class TreeIRVisitor implements VisitorIR {
 
         if((vD=(VarInfo) metodo.paramEntrada.get(var))!=null);
         else if((vD=(VarInfo) metodo.listaDeVariaveis.get(var))!=null);
-        else vD=(VarInfo) classe.get(var);
-        
+        else if ((vD=(VarInfo) classe.get(var))!= null);
+        else 
+        {
+        	ClassInfo aux = (ClassInfo)classes.get(classe.extendedClass);
+        	while(aux != null)
+        	{
+        		vD=(VarInfo) aux.get(var);
+        		if( vD != null)
+        		{
+        			break;
+        		}
+        	}
+        	
+        }
+        System.out.println(classe.id);
+        System.out.println(metodo.id);
         return new Exp(vD.access.exp(new TEMP(frameAtual.FP())));
 	}
 	
@@ -122,10 +138,16 @@ public class TreeIRVisitor implements VisitorIR {
 		n.m.accept(this);
 		for (int i = 0; i < n.cl.size(); i++) {
 			this.classe = (ClassInfo)this.classes.get(Symbol.symbol(n.cl.elementAt(i).toString()));
+			System.out.println(i);
 			n.cl.elementAt(i).accept(this);
 			
 		}
 		tree.Print h = new tree.Print(System.out);
+		Stm temp;
+		for (int i = 0; i < fragmentos.size(); i++) {
+			temp = fragmentos.get(i).body;
+			h.prStm(temp);
+		}
 		
 		// TODO Auto-generated method stub
 		return null;
@@ -135,7 +157,9 @@ public class TreeIRVisitor implements VisitorIR {
 	public Exp visit(MainClass n) {
 		
 		this.classe = (ClassInfo)classes.get(Symbol.symbol(n.i1.toString()));
-		frameAtual = frameAtual.newFrame(Symbol.symbol("principal"), new ArrayList<Boolean>());
+		ArrayList<Boolean> j = new ArrayList<Boolean>();
+		j.add(false);
+		frameAtual = frameAtual.newFrame(Symbol.symbol("principal"),j); //new ArrayList<Boolean>());
 		frames.push(frameAtual);
 		Stm body =new EXP(n.s.accept(this).unEx());
 		ArrayList<Stm> lista = new ArrayList<Stm>();
@@ -168,6 +192,9 @@ public class TreeIRVisitor implements VisitorIR {
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);	
 		}
+		
+		alocarVariaveisSuper();
+		
 		for (int i = 0; i < n.ml.size(); i++) {
 			n.ml.elementAt(i).accept(this);
 		}
@@ -175,15 +202,56 @@ public class TreeIRVisitor implements VisitorIR {
 		return null;
 	}
 
+	private void alocarVariaveisSuper() {
+		ClassInfo aux = (ClassInfo)classes.get(classe.extendedClass);
+		VarInfo vD;
+		while(aux != null)
+		{
+			Iterator<Symbol> x = aux.atributos.keys().iterator();
+			while(x.hasNext())
+			{
+				vD = (VarInfo) aux.atributos.get(x.next());
+				vD.access = frameAtual.allocLocal(false);
+			}
+			aux = (ClassInfo)classes.get(aux.extendedClass);
+			
+		}
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public Exp visit(VarDecl n) 
 	{
 		VarInfo vD;
 
-        if((vD=(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString())))!=null);
-        else if((vD=(VarInfo) metodo.listaDeVariaveis.get(Symbol.symbol(n.i.toString())))!=null);
-        else vD=(VarInfo) classe.get(Symbol.symbol(n.i.toString()));
-		vD.access = frameAtual.allocLocal(false);
+		if(metodo != null)
+		{
+			vD=(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString()));
+			if(vD!= null)
+			{
+				vD.access = frameAtual.allocLocal(false);
+				return null;
+			} 
+			vD =(VarInfo) metodo.listaDeVariaveis.get(Symbol.symbol(n.i.toString()));
+			
+			if(vD!= null)
+			{
+				vD.access = frameAtual.allocLocal(false);
+				return null;
+			} 
+			/*if((vD=(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString())))!=null);
+	        else if((vD=(VarInfo) metodo.listaDeVariaveis.get(Symbol.symbol(n.i.toString())))!=null);
+			vD.access = frameAtual.allocLocal(false);*/
+		}
+        
+        vD=(VarInfo) classe.get(Symbol.symbol(n.i.toString()));
+        if(vD!= null)
+		{
+			vD.access = frameAtual.allocLocal(false);
+		} 
+		
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -194,11 +262,18 @@ public class TreeIRVisitor implements VisitorIR {
 		
 		Stm corpo = new EXP( new CONST(0));
 		ArrayList<Boolean> j = new ArrayList<Boolean>();
+		metodo = (MethodInfo)classe.getMetodo(Symbol.symbol(n.id.toString()));
+		if(metodo == null)
+			System.out.println("teste");
 		for (int i = 0; i <= n.fl.size(); i++) {
 			j.add(false);
 		}
 		frameAtual = frameAtual.newFrame(Symbol.symbol(classe.toString()+"$"+ metodo.toString()), (java.util.List<Boolean>)j);
 		frames.push(frameAtual);
+		
+		for (int i = 0; i < n.fl.size(); i++) {
+			n.fl.elementAt(i).accept(this);
+		}
 		
 		for (int i = 0; i < n.vl.size(); i++) {
 			n.vl.elementAt(i).accept(this);	
@@ -219,6 +294,14 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(Formal n) {
+		
+		VarInfo vD =(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString()));
+
+        //if((vD=(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString())))!=null);
+        //else if((vD=(VarInfo) metodo.listaDeVariaveis.get(Symbol.symbol(n.i.toString())))!=null);
+        //else vD=(VarInfo) classe.get(Symbol.symbol(n.i.toString()));
+		vD.access = frameAtual.allocLocal(false);
+		
 		// TODO Auto-generated method stub
 		//return new Exp( new TEMP ( frameAtual.FP()));//pegarEndereco(Symbol.symboln.i.toString());
 		return null;
@@ -356,7 +439,86 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(Call n) {
-		ClassInfo j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
+		ClassInfo j = null; //= (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
+		if(n.e instanceof This )
+		{
+			j = this.classe;
+		}
+		
+		else
+		{
+			if(n.e instanceof NewObject)
+			{
+				j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
+			}
+			else
+			{
+				VarInfo aux;
+				aux = (VarInfo)metodo.listaDeVariaveis.get(Symbol.symbol(n.e.toString()));
+				if( aux != null)
+				{
+					j = (ClassInfo)classes.get(Symbol.symbol(aux.gettype().toString()));
+				}
+				else
+				{
+					aux = (VarInfo)metodo.paramEntrada.get(Symbol.symbol(n.e.toString()));
+					if( aux != null)
+					{
+						j = (ClassInfo)classes.get(Symbol.symbol(aux.gettype().toString()));
+					}
+					else
+					{
+						aux = (VarInfo)classe.get(Symbol.symbol(n.e.toString()));//deve procurar pelos atributos super aqui
+						if( aux != null)
+						{
+							j = (ClassInfo)classes.get(Symbol.symbol(aux.gettype().toString()));
+						}
+						else
+						{
+							if( n.e instanceof Call)//Expressao do tipo call
+							{
+								syntaxtree.Exp ajudante = n.e;
+								int i = 0;
+								while (ajudante instanceof Call)
+								{
+									i++;
+									ajudante = n.e;
+								}
+								
+								/*Iterator<Symbol> temp = classes.keys().iterator();
+								ClassInfo temp2;
+								while(temp.hasNext())
+								{
+									temp2 = (ClassInfo)classes.get(temp.next());
+								}*/
+								//Procura em todas as classes onde esta este metodo para saber seu retorno(classe de retorno)
+								MethodInfo aux2 = null; //= (MethodInfo)classe.getMetodo(Symbol.symbol(((Call)n.e).i.toString()));
+								if(aux2 != null)//Pode ser da superclasse,ter que checar
+								{
+									j = (ClassInfo)classes.get(aux2.retorno);
+								}
+							}
+							else//Procurar em que superclasse esta o atributo
+							{
+								
+							}
+						}
+					}
+				}
+				
+			}
+			//j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
+		}
+		
+		if( j == null)
+		{
+			
+			System.out.println("TESTE");
+			System.out.println(classe.id);
+			System.out.println(metodo.id);
+			System.out.println(n.e);
+			System.out.println(n.i);
+		}
 		//MethodInfo x = (MethodInfo)j.getMetodo(Symbol.symbol(n.i.toString()));
 		
 		tree.ExpList lista = null;
@@ -417,8 +579,10 @@ public class TreeIRVisitor implements VisitorIR {
 	public Exp visit(NewObject n) {
 		ClassInfo j = (ClassInfo)classes.get(Symbol.symbol(n.i.toString()));
 		int tam = j.atributos.size();
-		while(j.extendedClass!= null)
+		
+		while(classes.get(j.extendedClass)!= null)
 		{	
+			System.out.println("teste");
 			j = (ClassInfo)classes.get(j.extendedClass);
 			tam += j.atributos.size();
 		}

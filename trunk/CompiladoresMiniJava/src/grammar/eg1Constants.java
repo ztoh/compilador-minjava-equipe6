@@ -13,77 +13,75 @@ public interface eg1Constants {
   /** RegularExpression Id. */
   int COMMENT = 5;
   /** RegularExpression Id. */
-  int COMMENT1 = 6;
+  int LPAREN = 6;
   /** RegularExpression Id. */
-  int LPAREN = 7;
+  int RPAREN = 7;
   /** RegularExpression Id. */
-  int RPAREN = 8;
+  int LSQPAREN = 8;
   /** RegularExpression Id. */
-  int LSQPAREN = 9;
+  int RSQPAREN = 9;
   /** RegularExpression Id. */
-  int RSQPAREN = 10;
+  int LBRACE = 10;
   /** RegularExpression Id. */
-  int LBRACE = 11;
+  int RBRACE = 11;
   /** RegularExpression Id. */
-  int RBRACE = 12;
+  int SEMICOLON = 12;
   /** RegularExpression Id. */
-  int SEMICOLON = 13;
+  int DOT = 13;
   /** RegularExpression Id. */
-  int DOT = 14;
+  int COMMA = 14;
   /** RegularExpression Id. */
-  int COMMA = 15;
+  int ASSIGN = 15;
   /** RegularExpression Id. */
-  int ASSIGN = 16;
+  int OP = 16;
   /** RegularExpression Id. */
-  int OP = 17;
+  int NOT = 17;
   /** RegularExpression Id. */
-  int NOT = 18;
+  int BOOLEAN = 18;
   /** RegularExpression Id. */
-  int BOOLEAN = 19;
+  int CLASS = 19;
   /** RegularExpression Id. */
-  int CLASS = 20;
+  int ELSE = 20;
   /** RegularExpression Id. */
-  int ELSE = 21;
+  int FALSE = 21;
   /** RegularExpression Id. */
-  int FALSE = 22;
+  int IF = 22;
   /** RegularExpression Id. */
-  int IF = 23;
+  int WHILE = 23;
   /** RegularExpression Id. */
-  int WHILE = 24;
+  int INTEGER = 24;
   /** RegularExpression Id. */
-  int INTEGER = 25;
+  int LENGTH = 25;
   /** RegularExpression Id. */
-  int LENGTH = 26;
+  int MAIN = 26;
   /** RegularExpression Id. */
-  int MAIN = 27;
+  int NEW = 27;
   /** RegularExpression Id. */
-  int NEW = 28;
+  int PUBLIC = 28;
   /** RegularExpression Id. */
-  int PUBLIC = 29;
+  int RETURN = 29;
   /** RegularExpression Id. */
-  int RETURN = 30;
+  int STATIC = 30;
   /** RegularExpression Id. */
-  int STATIC = 31;
+  int STRING = 31;
   /** RegularExpression Id. */
-  int STRING = 32;
+  int THIS = 32;
   /** RegularExpression Id. */
-  int THIS = 33;
+  int TRUE = 33;
   /** RegularExpression Id. */
-  int TRUE = 34;
+  int PRINT = 34;
   /** RegularExpression Id. */
-  int PRINT = 35;
+  int VOID = 35;
   /** RegularExpression Id. */
-  int VOID = 36;
+  int EXTENDS = 36;
   /** RegularExpression Id. */
-  int EXTENDS = 37;
+  int ALL = 37;
   /** RegularExpression Id. */
-  int ALL = 38;
+  int DIGIT = 38;
   /** RegularExpression Id. */
-  int DIGIT = 39;
+  int NUM = 39;
   /** RegularExpression Id. */
-  int NUM = 40;
-  /** RegularExpression Id. */
-  int ID = 41;
+  int ID = 40;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -96,7 +94,6 @@ public interface eg1Constants {
     "\"\\r\"",
     "\"\\t\"",
     "<COMMENT>",
-    "<COMMENT1>",
     "\"(\"",
     "\")\"",
     "\"[\"",

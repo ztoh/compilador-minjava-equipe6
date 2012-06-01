@@ -30,4 +30,9 @@ public class NewObject extends Exp {
 		// TODO Auto-generated method stub
 		return v.visit(this);
 	}
+  
+  public String toString()
+  {
+	  return i.toString();
+  }
 }

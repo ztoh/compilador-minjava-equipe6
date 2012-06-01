@@ -5,6 +5,8 @@ import visitor.*;
 import symboltablevisitor.*;
 import table.*;
 import typechecking.*;
+import translate.TreeIRVisitor;
+import mips.MipsFrame;
 
 /*Tente mover o mundo - o primeiro passo será mover a si mesmo.
   Platão
@@ -15,17 +17,19 @@ public class eg1 implements eg1Constants {
   {
         eg1 Analyzer  = new eg1(System.in);
         Program x = Analyzer.Start();
-        //Table k = x.accept(new ImperativeSymbolTableVisitor());
+        ClassTable k = (ClassTable)x.accept(new ImperativeSymbolTableVisitor());
         //System.out.println(k.toString());
-        ConcreteTypeCheckVisitor j = new ConcreteTypeCheckVisitor();
+        ConcreteTypeCheckVisitor j = new ConcreteTypeCheckVisitor(k);
         j.visit(x);
+        TreeIRVisitor m = new TreeIRVisitor(k,new MipsFrame());
+        m.visit(x);
 
   }
 
   final public Program Start() throws ParseException {
  Program retorno;
     retorno = Program();
-    jj_consume_token(42);
+    jj_consume_token(41);
     System.out.println("Successfully recognized all tokens");
     {if (true) return retorno;}
     throw new Error("Missing return statement in function");
@@ -620,10 +624,10 @@ public class eg1 implements eg1Constants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x100000,0x2080000,0x20000000,0x2080000,0x20000000,0x800,0x1800800,0x8000,0x2080000,0x200,0x2080000,0x1800800,0x10200,0x1800800,0x2000000,0x10440080,0x4000000,0x24200,0x8000,0x10440080,};
+      jj_la1_0 = new int[] {0x80000,0x1040000,0x10000000,0x1040000,0x10000000,0x400,0xc00400,0x4000,0x1040000,0x100,0x1040000,0xc00400,0x8100,0xc00400,0x1000000,0x8220040,0x2000000,0x12100,0x4000,0x8220040,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x200,0x0,0x200,0x0,0x20,0x208,0x0,0x200,0x0,0x200,0x208,0x0,0x208,0x200,0x306,0x200,0x0,0x0,0x306,};
+      jj_la1_1 = new int[] {0x0,0x100,0x0,0x100,0x0,0x10,0x104,0x0,0x100,0x0,0x100,0x104,0x0,0x104,0x100,0x183,0x100,0x0,0x0,0x183,};
    }
   final private JJCalls[] jj_2_rtns = new JJCalls[1];
   private boolean jj_rescan = false;
@@ -809,7 +813,7 @@ public class eg1 implements eg1Constants {
   /** Generate ParseException. */
   public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[43];
+    boolean[] la1tokens = new boolean[42];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -826,7 +830,7 @@ public class eg1 implements eg1Constants {
         }
       }
     }
-    for (int i = 0; i < 43; i++) {
+    for (int i = 0; i < 42; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
