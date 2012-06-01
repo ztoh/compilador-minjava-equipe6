@@ -73,10 +73,10 @@ public class MipsFrame extends Frame {
 		    name = new Label(n + "." + count);
 		}
 		functions.put(n, count);
-	        actuals = new LinkedList<Access>();
+	    actuals = new LinkedList<Access>();
 		formals = new LinkedList<Access>();
 		int offset = 0;
-	        Iterator<Boolean> escapes = f.iterator();
+	    Iterator<Boolean> escapes = f.iterator();
 		formals.add(allocLocal(escapes.next().booleanValue()));
 		actuals.add(new InReg(V0));
 		for (int i = 0; i < argRegs.length; ++i) {

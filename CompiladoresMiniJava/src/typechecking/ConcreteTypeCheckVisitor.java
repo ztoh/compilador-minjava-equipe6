@@ -50,11 +50,17 @@ public class ConcreteTypeCheckVisitor implements TypeCheckVisitor {
 	ClassTable contexto;
 	Stack <Table> scope;
 	
+
+	public ConcreteTypeCheckVisitor(ClassTable x)
+	{
+		contexto = x;
+	}
+	
 	@Override
 	public ClassTable visit(Program n) {
 		scope = new Stack<Table>();
-		ImperativeSymbolTableVisitor vis = new ImperativeSymbolTableVisitor();
-		contexto =(ClassTable) vis.visit(n);
+		//ImperativeSymbolTableVisitor vis = new ImperativeSymbolTableVisitor();
+		//contexto =(ClassTable) vis.visit(n);
 		n.m.accept(this);
 
 		for (int i = 0; i < n.cl.size(); i++) {
