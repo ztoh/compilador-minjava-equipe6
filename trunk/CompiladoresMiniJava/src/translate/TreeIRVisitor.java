@@ -286,7 +286,7 @@ public class TreeIRVisitor implements VisitorIR {
 		l.add(corpo);
 		frameAtual.procEntryExit1(l);
 		fragmentos.add(new Frag(corpo,frameAtual));
-		
+		metodo = null;
 		frames.pop();
 		// TODO Auto-generated method stub
 		return null;
@@ -297,13 +297,10 @@ public class TreeIRVisitor implements VisitorIR {
 		
 		VarInfo vD =(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString()));
 
-        //if((vD=(VarInfo) metodo.paramEntrada.get(Symbol.symbol(n.i.toString())))!=null);
-        //else if((vD=(VarInfo) metodo.listaDeVariaveis.get(Symbol.symbol(n.i.toString())))!=null);
-        //else vD=(VarInfo) classe.get(Symbol.symbol(n.i.toString()));
+        
 		vD.access = frameAtual.allocLocal(false);
 		
 		// TODO Auto-generated method stub
-		//return new Exp( new TEMP ( frameAtual.FP()));//pegarEndereco(Symbol.symboln.i.toString());
 		return null;
 	}
 
@@ -390,7 +387,6 @@ public class TreeIRVisitor implements VisitorIR {
 	public Exp visit(LessThan n) {
 		Exp e1 = n.e1.accept(this);
 		Exp e2 = n.e2.accept(this);
-		//Checar como implementar o LESSTHAN(RESOLVIDO)
 		// TODO Auto-generated method stub
 		return new Exp(new BINOP(BINOP.MINUS,e2.unEx(),e1.unEx()));
 	}
@@ -439,10 +435,17 @@ public class TreeIRVisitor implements VisitorIR {
 
 	@Override
 	public Exp visit(Call n) {
-		ClassInfo j = null; //= (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
+		
+		ClassInfo j = null; 
+		MethodInfo r = null;
 		if(n.e instanceof This )
 		{
 			j = this.classe;
+			
+			while ((r = (MethodInfo)classe.get(j.id)) == null){
+				j = (ClassInfo)classes.get(j.extendedClass);
+			}
+			
 		}
 		
 		else
@@ -519,7 +522,6 @@ public class TreeIRVisitor implements VisitorIR {
 			System.out.println(n.e);
 			System.out.println(n.i);
 		}
-		//MethodInfo x = (MethodInfo)j.getMetodo(Symbol.symbol(n.i.toString()));
 		
 		tree.ExpList lista = null;
 		for (int i = n.el.size() -1; i >= 0 ; i--) {
@@ -556,7 +558,7 @@ public class TreeIRVisitor implements VisitorIR {
 	public Exp visit(IdentifierExp n) {
 		// TODO Auto-generated method stub
 		return pegarEndereco(Symbol.symbol(n.s));
-	}
+	}	
 
 	@Override
 	public Exp visit(This n) {
