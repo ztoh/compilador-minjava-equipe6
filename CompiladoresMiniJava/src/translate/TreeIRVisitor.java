@@ -96,6 +96,8 @@ public class TreeIRVisitor implements VisitorIR {
 	MethodInfo metodo;
 	ClassInfo classe;
 	ArrayList <Frag> fragmentos;
+	Symbol classeDaGambiarra;
+	Symbol metodoDaGambiarra;
 	
 	public TreeIRVisitor(ClassTable k, Frame frameAtual)
 	{
@@ -127,8 +129,8 @@ public class TreeIRVisitor implements VisitorIR {
         	}
         	
         }
-        System.out.println(classe.id);
-        System.out.println(metodo.id);
+        //System.out.println(classe.id);
+        //System.out.println(metodo.id);
         return new Exp(vD.access.exp(new TEMP(frameAtual.FP())));
 	}
 	
@@ -138,7 +140,7 @@ public class TreeIRVisitor implements VisitorIR {
 		n.m.accept(this);
 		for (int i = 0; i < n.cl.size(); i++) {
 			this.classe = (ClassInfo)this.classes.get(Symbol.symbol(n.cl.elementAt(i).toString()));
-			System.out.println(i);
+			//System.out.println(i);
 			n.cl.elementAt(i).accept(this);
 			
 		}
@@ -320,10 +322,11 @@ public class TreeIRVisitor implements VisitorIR {
 	public Exp visit(If n) {
 		Label iff = new Label();
 		Label elsee = new Label();
+		Label fim = new Label();
 		tree.Exp cond = n.e.accept(this).unEx();
 		Exp label1 = n.s1.accept(this);
 		Exp label2 = n.s2.accept(this);
-		tree.Exp Cx = new ESEQ(new SEQ(new CJUMP(CJUMP.GT,cond,new CONST(0),iff,elsee),new SEQ(new SEQ(new LABEL(iff),new EXP(label1.unEx())),new SEQ(new LABEL(elsee),new EXP(label2.unEx())))),new CONST(0));
+		tree.Exp Cx = new ESEQ(new SEQ(new CJUMP(CJUMP.GT,cond,new CONST(0),iff,elsee),new SEQ(new SEQ(new LABEL(iff),new SEQ(new EXP(label1.unEx()), new JUMP(fim))),new SEQ(new LABEL(elsee),new SEQ(new EXP(label2.unEx()),new LABEL(fim))))),new CONST(0));
 
 		// TODO Auto-generated method stub
 		return new Exp(Cx);
@@ -339,12 +342,12 @@ public class TreeIRVisitor implements VisitorIR {
 		
 		// TODO Auto-generated method stub
 		return new Exp (new ESEQ(
-                new SEQ(new LABEL(teste),
+                new SEQ (new SEQ(new LABEL(teste),
                         new SEQ(
                                 new CJUMP(CJUMP.GT,cond.unEx(),new CONST(0),body,done),
                                 new SEQ(new LABEL(body), new SEQ(new EXP(stm.unEx()),new JUMP(teste)))
                         )
-        ), new CONST(0)));
+        ),new LABEL(done)), new CONST(0)));
 	}
 
 	@Override
@@ -424,35 +427,79 @@ public class TreeIRVisitor implements VisitorIR {
 		Exp e2 = n.e2.accept(this);
 		//Adicionando 1 porque a primeira posicao é para o tamanho do vetor
 		// TODO Auto-generated method stub
-		return new Exp(new BINOP(BINOP.PLUS,e1.unEx()  ,new BINOP(BINOP.MUL,new BINOP(BINOP.PLUS,new CONST(1) ,e2.unEx()) ,new CONST(frameAtual.wordSize())    )     )       );
+		return new Exp(new MEM( new BINOP(BINOP.PLUS,e1.unEx()  ,new BINOP(BINOP.MUL,new BINOP(BINOP.PLUS,new CONST(1) ,e2.unEx()) ,new CONST(frameAtual.wordSize())    )     )       ));
 	}
 
 	@Override
 	public Exp visit(ArrayLength n) {
 		// TODO Auto-generated method stub
-		return pegarEndereco(Symbol.symbol(((IdentifierExp)n.e).s));
+		return new Exp(new MEM(pegarEndereco(Symbol.symbol(((IdentifierExp)n.e).s)).unEx()));
 	}
 
 	@Override
 	public Exp visit(Call n) {
 		
 		ClassInfo j = null; 
-		MethodInfo r = null;
+		//MethodInfo r = null;
+		
+		tree.ExpList lista = null;
+		for (int i = n.el.size() -1; i >= 0 ; i--) {
+			lista = new ExpList(n.el.elementAt(i).accept(this).unEx(),lista);
+		}
+		
+		lista = new ExpList(n.e.accept(this).unEx(),lista);
+		
 		if(n.e instanceof This )
 		{
-			j = this.classe;
+			j = this.checarMetodoSuper(classe,Symbol.symbol(n.i.toString()));
+			/*j = this.classe;
 			
 			while ((r = (MethodInfo)classe.get(j.id)) == null){
 				j = (ClassInfo)classes.get(j.extendedClass);
-			}
+			}*/
 			
 		}
 		
-		else
+		if(n.e instanceof NewObject)
+		{
+			//System.out.println("AQUI");
+			//System.out.println(n.e);
+			//System.out.println(n.i);
+			j = this.checarMetodoSuper((ClassInfo)classes.get(Symbol.symbol(n.e.toString())), Symbol.symbol(n.i.toString()));
+			//j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));//procurar metodo na superclasse
+		}
+		
+		if(n.e instanceof IdentifierExp)//procurar variavel no metodo, na classe e na superclasse
+		{
+			VarInfo aux;
+			//ClassInfo auxiliar;// = this.checarVariavelSuper(x, i);
+			aux = (VarInfo) metodo.get(Symbol.symbol(n.e.toString()));
+			//System.out.println("AQUI");
+			//System.out.println(n.e);
+			//System.out.println("AQUI2");
+			if( aux== null)
+			{
+				j = this.checarVariavelSuper(classe, Symbol.symbol(n.e.toString()));
+				//auxiliar = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
+				//aux = (ClassInfo) .get(Symbol.symbol(n.e.toString()));
+			}
+			else
+			{
+				j = (ClassInfo)classes.get(Symbol.symbol(aux.toString()));
+			}
+		}
+		
+		if(n.e instanceof Call)//ver ultim call aninhado
+		{
+			j = (ClassInfo)classes.get( ((MethodInfo)(((ClassInfo)classes.get(this.classeDaGambiarra)).getMetodo(this.metodoDaGambiarra))).retorno    );
+			
+		}
+		
+		/*else
 		{
 			if(n.e instanceof NewObject)
 			{
-				j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
+				
 			}
 			else
 			{
@@ -493,7 +540,7 @@ public class TreeIRVisitor implements VisitorIR {
 								while(temp.hasNext())
 								{
 									temp2 = (ClassInfo)classes.get(temp.next());
-								}*/
+								}
 								//Procura em todas as classes onde esta este metodo para saber seu retorno(classe de retorno)
 								MethodInfo aux2 = null; //= (MethodInfo)classe.getMetodo(Symbol.symbol(((Call)n.e).i.toString()));
 								if(aux2 != null)//Pode ser da superclasse,ter que checar
@@ -511,28 +558,45 @@ public class TreeIRVisitor implements VisitorIR {
 				
 			}
 			//j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
-		}
-		
+		}*/
 		if( j == null)
 		{
 			
 			System.out.println("TESTE");
+			if(classe != null)
 			System.out.println(classe.id);
+			if(metodo != null)
 			System.out.println(metodo.id);
 			System.out.println(n.e);
 			System.out.println(n.i);
+			System.out.println(n.e.getClass());
 		}
 		
-		tree.ExpList lista = null;
-		for (int i = n.el.size() -1; i >= 0 ; i--) {
-			lista = new ExpList(n.el.elementAt(i).accept(this).unEx(),lista);
-		}
-		
-		lista = new ExpList(n.e.accept(this).unEx(),lista);
 		
 		// TODO Auto-generated method stub
-		
+		this.classeDaGambiarra = j.id;
+		this.metodoDaGambiarra = Symbol.symbol(n.i.toString());
 		return new Exp(new CALL(new NAME(new Label(j.id.toString()+"$"+n.i.toString())),lista));
+	}
+	
+	private ClassInfo checarMetodoSuper(ClassInfo x, Symbol i)
+	{
+		ClassInfo j = x;
+		while (((MethodInfo)j.getMetodo(i)) == null){
+			j = (ClassInfo)classes.get(j.extendedClass);
+		}
+		return j;
+		
+	}
+	
+	private ClassInfo checarVariavelSuper(ClassInfo x,Symbol i)
+	{
+		ClassInfo j = x;
+		while (((VarInfo)j.get(i)) == null){
+			j = (ClassInfo)classes.get(j.extendedClass);
+		}
+		return j;
+		
 	}
 
 	@Override
@@ -572,7 +636,7 @@ public class TreeIRVisitor implements VisitorIR {
 		Exp tam= n.e.accept(this);
 		tree.Exp aloc = new BINOP(BINOP.MUL, new BINOP(BINOP.PLUS,tam.unEx(),new CONST(1)) ,new CONST(frameAtual.wordSize()));
 		ExpList parametros = new ExpList(aloc,null);
-		tree.Exp retorno = frameAtual.externalCall("malloc", Conversor.converterExpList(parametros));
+		tree.Exp retorno = frameAtual.externalCall("initArray", Conversor.converterExpList(parametros));
 		// TODO Auto-generated method stub
 		return new Exp(retorno);
 	}
@@ -584,7 +648,7 @@ public class TreeIRVisitor implements VisitorIR {
 		
 		while(classes.get(j.extendedClass)!= null)
 		{	
-			System.out.println("teste");
+			//System.out.println("teste");
 			j = (ClassInfo)classes.get(j.extendedClass);
 			tam += j.atributos.size();
 		}
