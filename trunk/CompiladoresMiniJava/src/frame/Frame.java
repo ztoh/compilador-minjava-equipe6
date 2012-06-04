@@ -9,7 +9,8 @@ import symbol.Symbol;
 import temp.Label;
 
 
-public abstract class Frame {
+public abstract class Frame implements temp.TempMap
+{
 	public Label name;
 	public int wordSize;
 	public LinkedList<Access> formals;
@@ -24,7 +25,7 @@ public abstract class Frame {
 	abstract public Access allocLocal(boolean escape);
 	public abstract temp.Temp[] registers();
 	public abstract String tempMap(temp.Temp Temp);
-	//abstract public Assem.InstrList codegen(Tree.Stm stm);
+	abstract public List<assem.Instr> codegen(List<tree.Stm> stms);
 
 
 	
