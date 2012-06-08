@@ -7,6 +7,11 @@ import table.*;
 import typechecking.*;
 import translate.TreeIRVisitor;
 import mips.MipsFrame;
+import translate.Frag;
+import java.util.ArrayList;
+import tree.Stm;
+import tree.StmList;
+import canon.BasicBlocks;
 
 /** Token Manager. */
 public class eg1TokenManager implements eg1Constants

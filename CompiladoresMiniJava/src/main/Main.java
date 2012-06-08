@@ -50,7 +50,7 @@ class Main {
      assem.InstrList instrs= codegen(f.frame,traced);
      debug.println("# Instructions: ");
      for(assem.InstrList p=instrs; p!=null; p=p.tail)
-	debug.print(p.head.format(tempmap));
+	 debug.print(p.head.format(tempmap));
  }
 
  public static void main(String args[]) throws java.io.IOException {

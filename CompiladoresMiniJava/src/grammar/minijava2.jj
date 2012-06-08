@@ -19,6 +19,11 @@ import table.*;
 import typechecking.*;
 import translate.TreeIRVisitor;
 import mips.MipsFrame;
+import translate.Frag;
+import java.util.ArrayList;
+import tree.Stm;
+import tree.StmList;
+import canon.BasicBlocks;
 
 /*Tente mover o mundo - o primeiro passo será mover a si mesmo.
   Platão
@@ -26,6 +31,42 @@ import mips.MipsFrame;
 
 public class eg1
 {
+   static void prStmList(tree.Print print, tree.StmList stms) {
+   	for(tree.StmList l = stms; l!=null; l=l.tail)
+  	print.prStm(l.head);
+  }
+
+  static void emitProc(java.io.PrintStream out, Frag f) {
+    java.io.PrintStream debug = 
+          /* new java.io.PrintStream(new NullOutputStream()); */
+          out;
+    temp.TempMap tempmap= new temp.CombineMap(f.frame,new temp.DefaultMap());
+    tree.Print print = new tree.Print(debug, tempmap);
+    debug.println("# Before canonicalization: ");
+    print.prStm(f.body);
+    debug.print("# After canonicalization: ");
+    tree.StmList stms = canon.Canon.linearize(f.body);
+    prStmList(print,stms);
+	debug.println("# Basic Blocks: ");
+    canon.BasicBlocks b = new canon.BasicBlocks(stms);
+    for(canon.StmListList l = b.blocks; l!=null; l=l.tail) {
+      debug.println("#");
+      prStmList(print,l.head);
+    }       
+    print.prStm(new tree.LABEL(b.done));
+
+    debug.println("# Trace Scheduled: ");
+    tree.StmList traced = (new canon.TraceSchedule(b)).stms;
+    prStmList(print,traced);
+     //assem.InstrList instrs= codegen(f.frame,traced);
+     //debug.println("# Instructions: ");
+     //for(assem.InstrList p=instrs; p!=null; p=p.tail)
+	 //debug.print(p.head.format(tempmap));
+
+
+  }
+
+  
   public static void main(String[] args) throws ParseException
   {
 	eg1 Analyzer  = new eg1(System.in);
@@ -36,6 +77,16 @@ public class eg1
 	j.visit(x);
 	TreeIRVisitor m = new TreeIRVisitor(k,new MipsFrame());
 	m.visit(x);
+	ArrayList< Frag > aux= m.fragmentos;
+	//java.io.PrintStream out = 
+       // new java.io.PrintStream(new java.io.FileOutputStream(args[0] + ".s"));
+	//tree.Print print = new tree.Print(System.out);
+	Stm temp;
+	for(int i = 0; i < aux.size(); i++)
+	{
+	   emitProc(System.out, aux.get(i));
+	   
+	}
 	
   }
 }
