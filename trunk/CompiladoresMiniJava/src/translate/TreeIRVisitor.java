@@ -95,7 +95,7 @@ public class TreeIRVisitor implements VisitorIR {
 	ClassTable classes;
 	MethodInfo metodo;
 	ClassInfo classe;
-	ArrayList <Frag> fragmentos;
+	public ArrayList <Frag> fragmentos;
 	Symbol classeDaGambiarra;
 	Symbol metodoDaGambiarra;
 	
@@ -147,8 +147,8 @@ public class TreeIRVisitor implements VisitorIR {
 		tree.Print h = new tree.Print(System.out);
 		Stm temp;
 		for (int i = 0; i < fragmentos.size(); i++) {
-			temp = fragmentos.get(i).body;
-			h.prStm(temp);
+			//temp = fragmentos.get(i).body;
+			//h.prStm(temp);
 		}
 		
 		// TODO Auto-generated method stub
@@ -255,7 +255,7 @@ public class TreeIRVisitor implements VisitorIR {
 		} 
 		
 		// TODO Auto-generated method stub
-		return null;
+		return new Exp(vD.access.exp((new TEMP(frameAtual.FP()))));
 	}
 
 	@Override
@@ -462,9 +462,6 @@ public class TreeIRVisitor implements VisitorIR {
 		
 		if(n.e instanceof NewObject)
 		{
-			//System.out.println("AQUI");
-			//System.out.println(n.e);
-			//System.out.println(n.i);
 			j = this.checarMetodoSuper((ClassInfo)classes.get(Symbol.symbol(n.e.toString())), Symbol.symbol(n.i.toString()));
 			//j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));//procurar metodo na superclasse
 		}
@@ -472,16 +469,13 @@ public class TreeIRVisitor implements VisitorIR {
 		if(n.e instanceof IdentifierExp)//procurar variavel no metodo, na classe e na superclasse
 		{
 			VarInfo aux;
-			//ClassInfo auxiliar;// = this.checarVariavelSuper(x, i);
+
 			aux = (VarInfo) metodo.get(Symbol.symbol(n.e.toString()));
-			//System.out.println("AQUI");
-			//System.out.println(n.e);
-			//System.out.println("AQUI2");
+
 			if( aux== null)
 			{
 				j = this.checarVariavelSuper(classe, Symbol.symbol(n.e.toString()));
-				//auxiliar = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
-				//aux = (ClassInfo) .get(Symbol.symbol(n.e.toString()));
+
 			}
 			else
 			{
@@ -495,70 +489,7 @@ public class TreeIRVisitor implements VisitorIR {
 			
 		}
 		
-		/*else
-		{
-			if(n.e instanceof NewObject)
-			{
-				
-			}
-			else
-			{
-				VarInfo aux;
-				aux = (VarInfo)metodo.listaDeVariaveis.get(Symbol.symbol(n.e.toString()));
-				if( aux != null)
-				{
-					j = (ClassInfo)classes.get(Symbol.symbol(aux.gettype().toString()));
-				}
-				else
-				{
-					aux = (VarInfo)metodo.paramEntrada.get(Symbol.symbol(n.e.toString()));
-					if( aux != null)
-					{
-						j = (ClassInfo)classes.get(Symbol.symbol(aux.gettype().toString()));
-					}
-					else
-					{
-						aux = (VarInfo)classe.get(Symbol.symbol(n.e.toString()));//deve procurar pelos atributos super aqui
-						if( aux != null)
-						{
-							j = (ClassInfo)classes.get(Symbol.symbol(aux.gettype().toString()));
-						}
-						else
-						{
-							if( n.e instanceof Call)//Expressao do tipo call
-							{
-								syntaxtree.Exp ajudante = n.e;
-								int i = 0;
-								while (ajudante instanceof Call)
-								{
-									i++;
-									ajudante = n.e;
-								}
-								
-								/*Iterator<Symbol> temp = classes.keys().iterator();
-								ClassInfo temp2;
-								while(temp.hasNext())
-								{
-									temp2 = (ClassInfo)classes.get(temp.next());
-								}
-								//Procura em todas as classes onde esta este metodo para saber seu retorno(classe de retorno)
-								MethodInfo aux2 = null; //= (MethodInfo)classe.getMetodo(Symbol.symbol(((Call)n.e).i.toString()));
-								if(aux2 != null)//Pode ser da superclasse,ter que checar
-								{
-									j = (ClassInfo)classes.get(aux2.retorno);
-								}
-							}
-							else//Procurar em que superclasse esta o atributo
-							{
-								
-							}
-						}
-					}
-				}
-				
-			}
-			//j = (ClassInfo)classes.get(Symbol.symbol(n.e.toString()));
-		}*/
+		
 		if( j == null)
 		{
 			
