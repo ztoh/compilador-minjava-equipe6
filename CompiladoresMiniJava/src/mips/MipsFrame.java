@@ -12,6 +12,8 @@ import frame.Frame;
 import frame.Access;
 import java.util.Arrays;
 
+import jouette.Codegen;
+
 public class MipsFrame extends Frame {
 
     //Mini Java Library will be appended to end of 

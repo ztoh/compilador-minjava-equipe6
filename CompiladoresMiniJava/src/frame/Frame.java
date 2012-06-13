@@ -26,8 +26,4 @@ public abstract class Frame implements temp.TempMap
 	public abstract temp.Temp[] registers();
 	public abstract String tempMap(temp.Temp Temp);
 	abstract public List<assem.Instr> codegen(List<tree.Stm> stms);
-
-
-	
-
 }
