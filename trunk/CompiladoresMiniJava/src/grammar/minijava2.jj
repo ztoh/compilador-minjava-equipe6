@@ -12,6 +12,7 @@ options
 PARSER_BEGIN(eg1)
 
 package grammar;
+import util.Conversor;
 import syntaxtree.*;
 import visitor.*;
 import symboltablevisitor.*;
@@ -31,10 +32,23 @@ import canon.BasicBlocks;
 
 public class eg1
 {
+  static frame.Frame frame = new mips.MipsFrame();
    static void prStmList(tree.Print print, tree.StmList stms) {
    	for(tree.StmList l = stms; l!=null; l=l.tail)
   	print.prStm(l.head);
   }
+
+   static assem.InstrList codegen(frame.Frame f, tree.StmList stms) {
+  	assem.InstrList first=null, last=null;
+	    for(tree.StmList s=stms; s!=null; s=s.tail) {
+	       assem.InstrList i = Conversor.converterParaInsList(f.codegen(s.head));
+	       if (last==null) {first=last=i;}
+	       else {while (last.tail!=null) last=last.tail;
+		     last=last.tail=i;
+		    }
+	    }
+	    return first;
+	}
 
   static void emitProc(java.io.PrintStream out, Frag f) {
     java.io.PrintStream debug = 
@@ -58,10 +72,10 @@ public class eg1
     debug.println("# Trace Scheduled: ");
     tree.StmList traced = (new canon.TraceSchedule(b)).stms;
     prStmList(print,traced);
-     //assem.InstrList instrs= codegen(f.frame,traced);
-     //debug.println("# Instructions: ");
-     //for(assem.InstrList p=instrs; p!=null; p=p.tail)
-	 //debug.print(p.head.format(tempmap));
+    assem.InstrList instrs= codegen(f.frame,traced);
+    debug.println("# Instructions: ");
+    for(assem.InstrList p=instrs; p!=null; p=p.tail)
+	 debug.print(p.head.format(tempmap));
 
 
   }
