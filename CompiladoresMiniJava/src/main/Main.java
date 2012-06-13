@@ -1,5 +1,6 @@
 package main;
 
+import util.Conversor;
 import Semant.Semant;
 import Translate.Translate;
 import Parse.Parse;
@@ -16,7 +17,7 @@ class Main {
  static assem.InstrList codegen(frame.Frame f, tree.StmList stms) {
   	assem.InstrList first=null, last=null;
 	    for(tree.StmList s=stms; s!=null; s=s.tail) {
-	       assem.InstrList i = f.codegen(s.head);
+	       assem.InstrList i = Conversor.converterParaInsList(f.codegen(s.head));
 	       if (last==null) {first=last=i;}
 	       else {while (last.tail!=null) last=last.tail;
 		     last=last.tail=i;

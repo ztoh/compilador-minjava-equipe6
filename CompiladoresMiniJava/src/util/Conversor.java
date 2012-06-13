@@ -73,6 +73,47 @@ public class Conversor {
 		return retorno;
 	}
 	
+	public static void adicionar(temp.TempList lista, temp.Temp var)
+	{
+		temp.TempList tempo = lista;
+		while(tempo.tail != null)
+		{
+			tempo = tempo.tail;
+		}
+		tempo.tail = new temp.TempList(var, null);
+	}
+	
+	public static tree.StmList converterParaStmList(List<tree.Stm> lista)
+	{
+		tree.StmList retorno = null;
+		for (int i = lista.size()-1; i >= 0; i--) {
+			retorno = new tree.StmList((tree.Stm)lista.get(i),retorno);
+		}
+		return retorno;
+	}
+	
+	public static List<assem.Instr> converterInsList(assem.InstrList a)
+	{
+		ArrayList<assem.Instr> retorno = new ArrayList<assem.Instr>();
+		assem.InstrList temp = a;
+		while(temp != null)
+		{
+			retorno.add(temp.head);
+			temp = temp.tail;
+			
+		}
+		return retorno;
+	}
+	
+	public static assem.InstrList converterParaInsList(List<assem.Instr> lista)
+	{
+		assem.InstrList retorno = null;
+		for (int i = lista.size()-1; i >= 0; i--) {
+			retorno = new assem.InstrList((assem.Instr)lista.get(i),retorno);
+		}
+		return retorno;
+	}
+	
 	
 	
 }
