@@ -53,8 +53,9 @@ public class Codegen {
 			{
 				Temp r = munchExp(((CALL) (((EXP) s).exp)).func);
 				TempList l = munchArgs(0, ((CALL) (((EXP) s).exp)).args);
-				emit(new assem.OPER("CALL " + ((CALL) (((EXP) s).exp)).func + "\n",
+				emit(new assem.OPER("CALL " + ((NAME)((CALL) (((EXP) s).exp)).func).label + "\n",
 						null, new temp.TempList(r, l)));
+				//System.out.println("AQUI A CLASSE É"+((CALL) (((EXP) s).exp)).func.getClass());
 			}
 		}
 
@@ -211,7 +212,7 @@ public class Codegen {
 		if (dst instanceof tree.TEMP && src instanceof tree.CALL) {
 			Temp r = munchExp(((CALL) src).func);
 			TempList l = munchArgs(0, ((CALL) src).args);
-			emit(new assem.OPER("CALL " + ((CALL) src).func + "\n",
+			emit(new assem.OPER("CALL " + ((NAME)((CALL) src).func).label + "\n",
 					new temp.TempList(r, null), new temp.TempList(r, l)));
 		} else if (dst instanceof tree.TEMP)
 			munchMove((tree.TEMP) dst, src);
