@@ -1,6 +1,5 @@
 package flowgraph;
 import temp.TempList;
-import temp.Temp;
 import graph.NodeList;
 import graph.Node;
 
