@@ -3,12 +3,16 @@ package graph;
 public class Node {
 
     Graph mygraph;
-    private Node(){}
     int mykey;
+    
+    private Node(){}
+    
     public Node(Graph g) {
+    	
 	mygraph=g; 
 	mykey= g.nodecount++;
 	NodeList p = new NodeList(this, null);
+	
 	if (g.mylast==null)
 	   g.mynodes=g.mylast=p;
 	else g.mylast = g.mylast.tail = p;
@@ -47,5 +51,10 @@ public class Node {
     }
 
     public String toString() {return String.valueOf(mykey);}
+    
+    public int valor()
+    {
+    	return this.mykey;
+    }
 
 }
