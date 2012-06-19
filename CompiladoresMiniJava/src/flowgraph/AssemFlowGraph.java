@@ -10,8 +10,8 @@ import temp.TempList;
 
 public class AssemFlowGraph extends FlowGraph {
 	public Hashtable<Node,assem.Instr> instrucoes;
-	public Hashtable<Node,assem.LABEL> labels;
-	public Hashtable<assem.LABEL,Node> mapeamento;
+	public Hashtable<Node,temp.Label> labels;
+	public Hashtable<temp.Label,Node> mapeamento;
 		
 	public Node procurarNo( int n)
 	{
@@ -31,7 +31,11 @@ public class AssemFlowGraph extends FlowGraph {
 		return null;
 	}
 	public AssemFlowGraph(assem.InstrList instrs){
+		this.instrucoes = new Hashtable<Node, Instr>();
+		this.labels = new Hashtable<Node, temp.Label>();
+		this.mapeamento = new Hashtable<temp.Label, Node>();
 		
+		Node n = null;
 		Node ultimo = null;
 		Instr aux_label = null, aux_branch = null;
         for( InstrList a = instrs ; a != null; a = (InstrList) a.tail )
@@ -40,27 +44,45 @@ public class AssemFlowGraph extends FlowGraph {
                 {
                         aux_label = a.head;
                 }
+               
                 else
                 {
-                        Node n = this.newNode();
+                	 /*if(a.head instanceof assem.MOVE)
+                     {
+                     	if(a.head.jumps() == null)
+                     	{
+                     		System.out.println("TESTE");
+                     	}
+                     }*/
+                        n = this.newNode();
                         aux_branch = a.head;
                         this.instrucoes.put(n,aux_branch);
 
                         if(aux_label!=null)
                         { 
-                        	this.labels.put(n,(assem.LABEL)aux_label);
-                        	this.mapeamento.put((assem.LABEL)aux_label,n);
+                        	this.labels.put(n,((assem.LABEL)aux_label).label);
+                        	this.mapeamento.put(((assem.LABEL)aux_label).label,n);
+                        	//System.out.println("AQUI");
+                        	//System.out.println(((assem.LABEL)aux_label).label);
 
                             aux_label = null;
                         }
                         if( ultimo != null)
                         {
-                        	this.addEdge(ultimo, n);
+                        	if(a.head instanceof assem.MOVE)
+                        		System.out.println("AQUI");
+                        	
+                    		if(aux_branch.jumps() == null)
+                        		this.addEdge(ultimo, n);
+                        	
                         }
                         ultimo = n;
                 }	
         }
-        
+        n = this.newNode();
+        this.addEdge(ultimo,n);
+        ultimo = n;
+        this.instrucoes.put(ultimo, aux_label);
         int i = 0;
         for (InstrList a = instrs ; a != null; a = (InstrList) a.tail)
 		{
@@ -69,12 +91,33 @@ public class AssemFlowGraph extends FlowGraph {
 				if( ((assem.OPER)a.head).jump != null)
 				{
 					temp.LabelList  aux2= ((assem.OPER)a.head).jump.labels;
-					
-					this.addEdge(this.procurarNo(i), this.mapeamento.get(aux2.head));
-					//this.addEdge(ultimo, n);
+					while(aux2 != null){
+						/*if( aux2 == null)
+						{
+							System.out.println("TESTE3");
+						}
+						System.out.println(i);
+						if(this.procurarNo(i) == null)
+						{
+							System.out.println("TESTE");
+						}*/
+						if(this.mapeamento.get(aux2.head) == null)
+						{
+							this.addEdge(this.procurarNo(i), ultimo);
+							//System.out.println(aux2.head);
+							//System.out.println("TESTE2");
+						}
+						else
+						{
+							this.addEdge(this.procurarNo(i), this.mapeamento.get(aux2.head));
+							//this.addEdge(ultimo, n);
+						}
+						aux2 = aux2.tail;
+					}
 				}
+				i++;
 			}
-			i++;
+			
 		}
 	}
 	@Override

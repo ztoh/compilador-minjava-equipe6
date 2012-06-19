@@ -80,14 +80,22 @@ public class Codegen {
 			return ((tree.TEMP) s).temp;
 		// else //implementar, ja fo colocado direito na parte do MOVE E DO EXP
 		// return munchCall((tree.CALL)s);
+		if( s instanceof tree.NAME)
+			return new temp.Temp();
 		return null;
 	}
 
 	private TempList munchArgs(int i, ExpList args) {
 		ExpList temp = args;
-		TempList retorno = new temp.TempList(null, null);
+		TempList retorno = null;//new temp.TempList(null, null);
+		//if( temp == null)
+			//System.out.println("ERRO");
 		while (temp != null) {
-			Conversor.adicionar(retorno, munchExp(temp.head));
+			temp.Temp x = munchExp(temp.head);
+			//System.out.println("AAA " +x);
+			//if( x == null)
+				//System.out.println("FINALMENTE");
+			retorno = new temp.TempList(x,retorno);//Conversor.adicionar(retorno, munchExp(temp.head));
 			temp = temp.tail;
 		}
 		// TODO Auto-generated method stub
@@ -116,7 +124,7 @@ public class Codegen {
 		else if (s.relop == CJUMP.GT) {
 			emit(new assem.OPER("BRANCHGT if " + r + " > 0 goto " + s.iftrue+"\n",
 					null, new temp.TempList(r, null), new temp.LabelList(
-							s.iftrue, null)));
+							s.iftrue,null)));
 		} 
 		  else
 			emit(new assem.OPER("goto " + s.iffalse.toString()+"\n", null, null,
@@ -211,9 +219,21 @@ public class Codegen {
 			munchMove((MEM) dst, src);
 		if (dst instanceof tree.TEMP && src instanceof tree.CALL) {
 			Temp r = munchExp(((CALL) src).func);
+			if( r == null)
+			{
+				System.out.println("grite");
+				System.out.println(((CALL) src).func.getClass());
+			}
 			TempList l = munchArgs(0, ((CALL) src).args);
+			if(l.head.toString().equals("teste")){}
+			if( l == null)
+			{
+				System.out.println("grite2");
+				System.out.println(((CALL) src).args.getClass());
+			}
+			System.out.println("PASSOU POR AQUI");
 			emit(new assem.OPER("CALL " + ((NAME)((CALL) src).func).label + "\n",
-					new temp.TempList(r, null), new temp.TempList(r, l)));
+					new temp.TempList(r,null), l));
 		} else if (dst instanceof tree.TEMP)
 			munchMove((tree.TEMP) dst, src);
 	}
@@ -279,7 +299,7 @@ public class Codegen {
 		// munchExp(BINOP(SUB,e1,CONST(i)))
 		if (s.binop == BINOP.MINUS && s.right instanceof CONST) {
 			Temp r = new Temp();
-			TempList fonte = new temp.TempList(munchExp(s.left), null);
+			TempList fonte = new temp.TempList(munchExp(s.left),null);
 			emit(new assem.OPER("SUBI "+ r + " <- " + fonte.head + " - "
 					+ ((CONST) s.right).value + "\n",
 					new temp.TempList(r, null), fonte));

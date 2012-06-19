@@ -73,14 +73,23 @@ public class Conversor {
 		return retorno;
 	}
 	
-	public static void adicionar(temp.TempList lista, temp.Temp var)
+	public static temp.TempList adicionar(temp.TempList lista, temp.Temp var)
 	{
-		temp.TempList tempo = lista;
-		while(tempo.tail != null)
+		if( lista != null)
 		{
-			tempo = tempo.tail;
+			temp.TempList tempo = lista;
+			while(tempo.tail != null)
+			{
+				tempo = tempo.tail;
+			}
+			tempo.tail = new temp.TempList(var, null);
+			return tempo;
 		}
-		tempo.tail = new temp.TempList(var, null);
+		else
+		{
+			return new temp.TempList(var, null);
+		}
+		
 	}
 	
 	public static tree.StmList converterParaStmList(List<tree.Stm> lista)

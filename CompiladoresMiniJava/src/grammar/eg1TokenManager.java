@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import tree.Stm;
 import tree.StmList;
 import canon.BasicBlocks;
+import flowgraph.*;
 
 /** Token Manager. */
 public class eg1TokenManager implements eg1Constants

@@ -38,10 +38,22 @@ public abstract class FlowGraph extends graph.Graph {
 	  Node n = p.head;
 	  out.print(n.toString());
 	  out.print(": ");
+	  if( def(n) == null)
+	  {
+		  //System.out.println("OLAAAAA");
+	  }
 	  for(TempList q=def(n); q!=null; q=q.tail) {
+		  if( q.head == null)
+		  {
+			 // System.out.println("OLAAAAA");
+		  }
 	     out.print(q.head.toString());
 	     out.print(" ");
 	  }
+	 // System.out.println(isMove(n) + "SERA MOVE");
+	  //if(use(n) == null)
+		//  System.out.println("ALI");
+
 	  out.print(isMove(n) ? "<= " : "<- ");
 	  for(TempList q=use(n); q!=null; q=q.tail) {
 	     out.print(q.head.toString());

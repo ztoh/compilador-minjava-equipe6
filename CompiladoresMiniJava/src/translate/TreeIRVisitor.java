@@ -448,6 +448,10 @@ public class TreeIRVisitor implements VisitorIR {
 		}
 		
 		lista = new ExpList(n.e.accept(this).unEx(),lista);
+		if(lista.head == null)
+		{
+			System.out.println("nossa!");
+		}
 		
 		if(n.e instanceof This )
 		{
