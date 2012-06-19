@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import tree.Stm;
 import tree.StmList;
 import canon.BasicBlocks;
+import flowgraph.*;
 
 /*Tente mover o mundo - o primeiro passo será mover a si mesmo.
   Platão
@@ -76,7 +77,8 @@ public class eg1
     debug.println("# Instructions: ");
     for(assem.InstrList p=instrs; p!=null; p=p.tail)
 	 debug.print(p.head.format(tempmap));
-
+	AssemFlowGraph fluxo = new AssemFlowGraph(instrs);
+	fluxo.show(debug);
 
   }
 

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import tree.Stm;
 import tree.StmList;
 import canon.BasicBlocks;
+import flowgraph.*;
 
 /*Tente mover o mundo - o primeiro passo será mover a si mesmo.
   Platão
@@ -63,7 +64,8 @@ public class eg1 implements eg1Constants {
     debug.println("# Instructions: ");
     for(assem.InstrList p=instrs; p!=null; p=p.tail)
          debug.print(p.head.format(tempmap));
-
+        AssemFlowGraph fluxo = new AssemFlowGraph(instrs);
+        fluxo.show(debug);
 
   }
 
@@ -616,11 +618,6 @@ public class eg1 implements eg1Constants {
     finally { jj_save(0, xla); }
   }
 
-  private boolean jj_3_1() {
-    if (jj_3R_11()) return true;
-    return false;
-  }
-
   private boolean jj_3R_17() {
     return false;
   }
@@ -667,6 +664,11 @@ public class eg1 implements eg1Constants {
     if (jj_3R_15()) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_3R_11()) return true;
     return false;
   }
 
