@@ -47,13 +47,6 @@ public class AssemFlowGraph extends FlowGraph {
                
                 else
                 {
-                	 /*if(a.head instanceof assem.MOVE)
-                     {
-                     	if(a.head.jumps() == null)
-                     	{
-                     		System.out.println("TESTE");
-                     	}
-                     }*/
                         n = this.newNode();
                         aux_branch = a.head;
                         this.instrucoes.put(n,aux_branch);
@@ -62,15 +55,11 @@ public class AssemFlowGraph extends FlowGraph {
                         { 
                         	this.labels.put(n,((assem.LABEL)aux_label).label);
                         	this.mapeamento.put(((assem.LABEL)aux_label).label,n);
-                        	//System.out.println("AQUI");
-                        	//System.out.println(((assem.LABEL)aux_label).label);
 
                             aux_label = null;
                         }
                         if( ultimo != null)
                         {
-                        	if(a.head instanceof assem.MOVE)
-                        		System.out.println("AQUI");
                         	
                     		if(aux_branch.jumps() == null)
                         		this.addEdge(ultimo, n);
@@ -92,25 +81,13 @@ public class AssemFlowGraph extends FlowGraph {
 				{
 					temp.LabelList  aux2= ((assem.OPER)a.head).jump.labels;
 					while(aux2 != null){
-						/*if( aux2 == null)
-						{
-							System.out.println("TESTE3");
-						}
-						System.out.println(i);
-						if(this.procurarNo(i) == null)
-						{
-							System.out.println("TESTE");
-						}*/
 						if(this.mapeamento.get(aux2.head) == null)
 						{
 							this.addEdge(this.procurarNo(i), ultimo);
-							//System.out.println(aux2.head);
-							//System.out.println("TESTE2");
 						}
 						else
 						{
 							this.addEdge(this.procurarNo(i), this.mapeamento.get(aux2.head));
-							//this.addEdge(ultimo, n);
 						}
 						aux2 = aux2.tail;
 					}
