@@ -13,8 +13,7 @@ import tree.JUMP;
 import tree.MEM;
 import tree.SEQ;
 import tree.NAME;
-import tree.StmList;
-import util.Conversor;
+
 
 public class Codegen {
 
@@ -43,24 +42,17 @@ public class Codegen {
 			emit(new assem.LABEL( (((tree.LABEL) s).label) + ":\n", ((tree.LABEL) s).label));
 		if (s instanceof tree.JUMP)
 			munchJump((tree.JUMP) s);
-		if (s instanceof tree.CJUMP)// incompleto, professor respondeu, nao sei
-									// , e agora? deixar assim por enquanto
-									// parece razoavel
+		if (s instanceof tree.CJUMP)
 			munchCJump((tree.CJUMP) s);
 		if (s instanceof tree.EXP) {
-			// munchStm(EXP(CALL (e,args)))
 			if( ((tree.EXP)s).exp instanceof CALL)
 			{
 				Temp r = munchExp(((CALL) (((EXP) s).exp)).func);
 				TempList l = munchArgs(0, ((CALL) (((EXP) s).exp)).args);
 				emit(new assem.OPER("CALL " + ((NAME)((CALL) (((EXP) s).exp)).func).label + "\n",
 						null, new temp.TempList(r, l)));
-				//System.out.println("AQUI A CLASSE É"+((CALL) (((EXP) s).exp)).func.getClass());
 			}
 		}
-
-		// munchExp(((tree.EXP)s).exp);
-
 	}
 
 	temp.Temp munchExp(tree.Exp s) {
@@ -78,8 +70,6 @@ public class Codegen {
 			return munchBinop((tree.BINOP) s);
 		if (s instanceof tree.TEMP)
 			return ((tree.TEMP) s).temp;
-		// else //implementar, ja fo colocado direito na parte do MOVE E DO EXP
-		// return munchCall((tree.CALL)s);
 		if( s instanceof tree.NAME)
 			return new temp.Temp();
 		return null;
@@ -87,15 +77,10 @@ public class Codegen {
 
 	private TempList munchArgs(int i, ExpList args) {
 		ExpList temp = args;
-		TempList retorno = null;//new temp.TempList(null, null);
-		//if( temp == null)
-			//System.out.println("ERRO");
+		TempList retorno = null;
 		while (temp != null) {
 			temp.Temp x = munchExp(temp.head);
-			//System.out.println("AAA " +x);
-			//if( x == null)
-				//System.out.println("FINALMENTE");
-			retorno = new temp.TempList(x,retorno);//Conversor.adicionar(retorno, munchExp(temp.head));
+			retorno = new temp.TempList(x,retorno);
 			temp = temp.tail;
 		}
 		// TODO Auto-generated method stub
@@ -226,22 +211,13 @@ public class Codegen {
 			}
 			TempList l = munchArgs(0, ((CALL) src).args);
 			if(l.head.toString().equals("teste")){}
-			if( l == null)
-			{
-				System.out.println("grite2");
-				System.out.println(((CALL) src).args.getClass());
-			}
+			
 			System.out.println("PASSOU POR AQUI");
 			emit(new assem.OPER("CALL " + ((NAME)((CALL) src).func).label + "\n",
 					new temp.TempList(r,null), l));
 		} else if (dst instanceof tree.TEMP)
 			munchMove((tree.TEMP) dst, src);
 	}
-
-	/*
-	 * private Temp munchCall(CALL s) { // TODO Auto-generated method stub
-	 * return null; }
-	 */
 
 	private Temp munchBinop(BINOP s) {
 		// munchExp(BINOP(PLUS,e1,CONST (i)))

@@ -22,9 +22,6 @@ no meio do caminho tinha uma pedra.
 */
 
 
-//Ultima coisa a ser feita é ajeitar o Call para checar por atributos da super
-//e pegar a classe que tem o metodo do call recursivo
-
 package translate;
 
 import java.util.ArrayList;
@@ -129,8 +126,6 @@ public class TreeIRVisitor implements VisitorIR {
         	}
         	
         }
-        //System.out.println(classe.id);
-        //System.out.println(metodo.id);
         return new Exp(vD.access.exp(new TEMP(frameAtual.FP())));
 	}
 	
